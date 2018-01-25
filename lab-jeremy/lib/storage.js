@@ -66,7 +66,7 @@ storage.update = function(schema, item) {
     if(!memory[schema] || !memory[schema][item._id]){
       debug(`The thing didn't exist...`);
       storage.create(schema, item);
-      return (memory[schema][item._id]);
+      return resolve(memory[schema][item._id]);
     } 
 
     memory[schema][item._id] = item;
@@ -78,10 +78,14 @@ storage.delete = function(schema, itemID) {
   debug('Deleted the thing');
 
   return new Promise((resolve, reject) => {
-    if(!schema || !itemID) return reject(new Error('Cannot delete item; Schema and Item required'));
+    // console.log(schema, itemID)
+    if(!schema || !itemID) {
+      return reject(new Error('Cannot delete item; Schema and Item required'));
+    }
 
-    if(!memory[schema] || !memory[schema][itemID]) return reject(new Error('Cannot delete item; Schema or itemID does not exist'));
-
+    if(!memory[schema] || !memory[schema][itemID]) {
+      return reject(new Error('Cannot delete item; Schema or itemID does not exist'));
+    }
     delete memory[schema][itemID];
     return resolve();
   });

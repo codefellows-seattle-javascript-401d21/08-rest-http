@@ -53,7 +53,7 @@ Router.prototype.route = function() {
           this.routes[req.method][req.url.pathname](req, res);
           return;
         }
-
+        // console.log(`this.routes[${req.method}][${req.url.pathname}] is not a function`);
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.write('Not Found');
         res.end();
@@ -61,7 +61,7 @@ Router.prototype.route = function() {
       })
       .catch(err => {
         debug(`There was an error parsing the URL or Body: ${err}`);
-
+        // console.log(`this.routes[${req.method}][${req.url.pathname}] - ERROR PARSING URL OR BODY`);
         res.writeHead(400, {'Content-Type': 'text/plain'});
         res.write('Bad Request');
         res.end();

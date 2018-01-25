@@ -32,14 +32,21 @@ module.exports = function(router) {
     debug('GET /api/v1/note');
 
     try {
-      // debugger;
-
-      storage.get('Note', req.params._id)
-        .then(storedNote => {
-          res.writeHead(200, {'Content-Type': 'application/json'});
-          res.write(JSON.stringify(storedNote));
-          res.end();
-        });
+      if (req.url.query._id) {
+        storage.fetchOne('Note', req.url.query._id)
+          .then(notes => {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.write(JSON.stringify(notes));
+            res.end();
+          });
+      } else {
+        storage.fetchAll('Note')
+          .then(notes => {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.write(JSON.stringify(notes));
+            res.end();
+          });
+      }
     } catch(err) {
       debug(`There was a bad request: ${err}`);
 
@@ -55,9 +62,9 @@ module.exports = function(router) {
     try {
       // debugger;
       let newNote = new Note(req.body.title, req.body.content);
-
+      newNote._id = req.body._id;
       storage.update('Note', newNote)
-        .then(storedNote => {
+        .then(() => {
           res.writeHead(204, {'Content-Type': 'text/plain'});
           res.write('Updated');
           res.end();
@@ -72,18 +79,21 @@ module.exports = function(router) {
   });
 
   router.delete('/api/v1/note', (req, res) => {
-    debug('POST /api/v1/note');
-
+    debug('DELETE /api/v1/note');
+    console.log(this)
     try {
       // debugger;
-
-      storage.delete('Note', req.params._id)
-        .then(storedNote => {
+      console.log(this)
+      storage.delete('Note', req.url.query._id)
+        .then(() => {
+          console.log('NO ERROR')
           res.writeHead(204, {'Content-Type': 'text/plain'});
           res.write('Deleted');
           res.end();
         });
     } catch(err) {
+      console.log(this)
+      console.log('ERROR')
       debug(`There was a bad request: ${err}`);
 
       res.writeHead(400, {'Content-Type': 'text/plain'});
