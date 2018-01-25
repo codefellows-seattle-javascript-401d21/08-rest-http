@@ -5,101 +5,90 @@ const server = require('../lib/server');
 const superagent = require('superagent');
 require('jest');
 
-// Test Variables
-let idHolder, api = ':3000/api/v1/note';
+// let noteID;
 
-describe('Server module', () => {
-  beforeAll(() => server.start(3000));
+describe('Server Module', function() {
+  beforeAll(() => server.start(4444));
   afterAll(() => server.stop());
 
-  describe('Valid Request to the API', () => {
-    describe('POST /api/v1/notes', () => {
-      it('Should respond with a bad request if bad data is sent', () => {
-        return superagent.post(api)
-          .catch(err => {
-            expect(err.response.text).toMatch(/Bad Request/);
-          });
-      });
-      it('Should respond with a status of 200', () => {
-        return superagent.post(api)
-          .send({title: 'test 1', content: 'this is the first test'})
-          .then(res => {
-            expect(res.status).toBe(201);
-          });
-      });
-      it('Should post a single note and return it', () => {
-        return superagent.post(api)
-          .send({title: 'test 2', content: 'this is the second test'})
-          .then(res => {
-            idHolder = res.body._id;
-            expect(res.body.title).toMatch(/test 2/);
-          });
-      });
+  describe('POST', () => {
+    it('should return a status 400 with invalid input', () => {
+      return superagent.post(':4444/api/v1/note')
+        .catch(err => {
+          expect(err.response.text).toBe('Bad Request');
+        });
     });
-    describe('GET /api/v1/note', () => {
-      it('Should respond with a status 200', () => {
-        return superagent.get(api)
-          .then(res => {
-            expect(res.status).toBe(200);
-          });
-      });
-      it('Should respond with all notes', () => {
-        return superagent.get(api)
-          .then(res => {
-            expect(JSON.parse(res.text));
-          });
-      });
-      it('Should respond with a single note', () => {
-        return superagent.get(`${api}?_id=${idHolder}`)
-          .then(res => {
-            expect(JSON.parse(res.text).title).toBe('test 2');
-          });
-      });
-      it('Should respond a bad request response if no query text is sent', () => {
-        return superagent.get(`${api}?_id`)
-          .catch(err => {
-            console.log(err.response);
-            
-            expect(err.response.text).toMatch(/Bad Request/);
-          });
-      });
+    it('should respond with valid context in body', () => {
+      return superagent.post(':4444/api/v1/note')
+        .send({title: 'one', content: 'hello'})
+        .then(res => {
+          // noteId = res.body._id;
+          expect(res.body.content).toBe('hello');
+        });
     });
-    describe('PUT /api/v1/note', () => {
-      it('Should respond with a status 200', () => {
-        return superagent.put(api)
-          .send({_id: idHolder, title: 'test 2', content: 'updated test 2 - attempt 1'})
-          .then(res => {
-            expect(res.status).toBe(201);
-          });
-      });
-      it('Should respond with a single note', () => {
-        return superagent.get(`${api}?_id=${idHolder}`)
-          .then(res => {
-            expect(JSON.parse(res.text).title).toBe('test 2');
-          });
-      });
-      it('Should respond a bad request response if invalid query text is sent', () => {
-        return superagent.get(`${api}?_id=`)
-          .catch(err => {
-            expect(err.response.text).toMatch(/Bad Request/);
-          });
-      });
+    it('should respond with a status 201 with valid input', () => {
+      return superagent.post(':4444/api/v1/note')
+        .send({title: 'two', content: 'hola'})
+        .then(res => {
+          expect(res.status).toBe(201);
+        });
     });
-    describe('DELETE /api/v1/note', () => {
-      it('Should respond with a status 200', () => {
-        return superagent.del(`${api}?_id=${idHolder}`)
-          .then(res => {
-            expect(res.status).toBe(200);
-            expect(res.text).toMatch(/Successfully Deleted/);
-          });
-      });
-      it('Should respond a bad request response if no query text is sent', () => {
-        return superagent.del(`${api}?_id=${idHolder}`)
-          .catch(err => {
-            console.error(err.response);
-            expect(err.response.text).toMatch(/Bad Request/);
-          });
-      });
+  });
+  describe('GET', () => {
+    it('should return a status 400 with invalid input', () => {
+      return superagent.get(':4444/api/v1/note')
+        .catch(err => {
+          expect(err.response.text).toBe('Bad Request');
+        });
+    });
+    it('Should respond with all notes', () => {
+      return superagent.get(':4444/api/v1/note')
+        .then(res => {
+          expect(JSON.parse(res.text));
+        });
+    });
+    it('should respond with a status 200 with valid input', () => {
+      return superagent.get(':4444/api/v1/note')
+        .send({title: 'two', content: 'hola'})
+        .then(res => {
+          expect(res.status).toBe(200);
+        });
+    });
+  });
+  describe('PUT', () => {
+    it('should return a status 400 with invalid input', () => {
+      return superagent.put(':4444/api/v1/note')
+        .catch(err => {
+          expect(err.status).toBe(400);
+        });
+    });
+    it('should respond with a status 204 with valid input', () => {
+      return superagent.put(':4444/api/v1/note')
+        .send({title: 'three', content: 'hello'})
+        .then(res => {
+          expect(res.status).toBe(204);
+        });
+    });
+    it('Should respond a bad request response if invalid query text is sent', () => {
+      return superagent.put(':4444/api/v1/note id=')
+        .catch(err => {
+          expect(err.response.text).toBe('Bad Request');
+        });
+    });
+  });
+  describe('DELETE', () => {
+    it('should return a status 400 with invalid input', () => {
+      return superagent.delete(':4444/api/v1/note')
+        .catch(err => {
+          expect(err.status).toBe(400);
+        });
+    });
+    it('should respond with a status 204 with valid input', () => {
+      return superagent.delete(':4444/api/v1/note')
+        .send({title: 'four', content: 'hello'})
+        .then(res => {
+          expect(res.status).toBe(204);
+        });
     });
   });
 });
