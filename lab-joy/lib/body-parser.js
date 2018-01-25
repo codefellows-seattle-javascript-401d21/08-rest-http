@@ -1,31 +1,31 @@
 'use strict';
 
-const debug = require('debug')('http:body-parser');
+const debug = require('debug')('http:body-parser'); //
 
-module.exports = function (request) {
+module.exports = function (req) {
     return new Promise((resolve, reject) => {
-        debug('#bodyParser');
-        if (request.method !== 'POST' && request.method !== 'PUT') return resolve(request);
+        debug('#bodyParser'); //
+        if (req.method !== 'POST' && req.method !== 'PUT') return resolve(req);
 
-        let message = '';
+        let msg = '';
 
-        request.on('data', data => {
-            debug(`Chunked request data: ${data.toString()}`);
-            message += data.toString();
+        req.on('data', data => {
+            debug(`Chunked req data: ${data.toString()}`);
+            msg += data.toString();
         });
 
-        request.on('end', () => {
+        req.on('end', () => {
             try {
-                request.body = JSON.parse(message);
-                debug(`Completed request body: ${request.body}`);
-                return resolve(request);
+                req.body = JSON.parse(msg);
+                debug(`Completed req body: ${req.body}`);
+                return resolve(req);
             } catch (err) {
                 return reject(err);
             }
         });
 
-        request.on('error', err => {
-            debug(`Error occurred on parsing request body: ${err}`);
+        req.on('error', err => {
+            debug(`Error occurred on parsing req body: ${err}`);
             return reject(err);
         });
     });
