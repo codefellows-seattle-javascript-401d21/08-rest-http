@@ -28,7 +28,7 @@ module.exports = function(router) {
         debug('GET /api/v1/note');
         try {
             if (req.url.query._id) {
-                storage.fetchOne('note', req.url.query_id)
+                storage.fetchOne('note', req.url.query._id)
                     .then(note => {
                         res.writeHead(200, {'Content-Type': 'application/json'});
                         res.write(JSON.stringify(note));
@@ -37,9 +37,9 @@ module.exports = function(router) {
                     });
             } else {
                 storage.fetchAll('note')
-                    .then(notes => {
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.write(JSON.stringify(notes));
+                    .then(note => {
+                        res.writeHead(200, {'Content-Type': 'application/json'});
+                        res.write(JSON.stringify(note));
                         res.end();
                         return;
                     });

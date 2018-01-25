@@ -27,15 +27,15 @@ storage.create = function (schema, item) {
     });
 };
 
-storage.fetchOne = function () {
+storage.fetchOne = function (schema, _id) {
     debug(`Fetched note ${_id}`);
     return new Promise((resolve, reject) => {
-        if (!_id) return reject(new Error('Invalid get request.'));
-        return resolve(memory[schema][item._id]);
+        if (!schema || !_id) return reject(new Error('Invalid get request.'));
+        return resolve(memory[schema][_id]);
     });
 };
 
-storage.fetchAll = function () {
+storage.fetchAll = function (schema) {
     debug('Fetched all notes');
     return new Promise((resolve, reject) => {
         if (!schema) return reject(new Error('No notes available for this schema.'));
