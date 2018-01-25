@@ -27,9 +27,12 @@ Router.prototype.route = function(){
       body_parser(req),
     ])
       .then(() =>{
-
+        
         let routeProcess = this.routes[req.method][req.url.pathname];
-        if( typeof routeFunction === 'function') return routeProcess(req, res);
+        if( typeof routeProcess === 'function') return routeProcess(req, res);
+        
+        debug(`route: req.method ${req.method}`);
+        debug(`route: req.url.pathname ${req.url.pathname}`);
         
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.write('Not Found');
@@ -37,6 +40,7 @@ Router.prototype.route = function(){
         return;
       })
       .catch(err =>{
+        debug(`route error: ${err}`);
         res.writeHead(400, {'Content-Type': 'text/plain'});
         res.write('Bad Request');
         res.end();
