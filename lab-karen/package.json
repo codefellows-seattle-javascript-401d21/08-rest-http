@@ -1,0 +1,40 @@
+{
+  "name": "08-list",
+  "version": "1.0.0",
+  "description": "students will learn to use promise constructs to manage asynchronous code",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest",
+    "start:watch": "nodemon index.js",
+    "start:debug": "DEBUG=http* nodemon index.js"
+  },
+  "jest": {
+  "verbose": true,
+  "testEnvironment": "node",
+  "collectCoverage": true,
+  "coverageDirectory": "./coverage",
+  "coverageThreshold": {
+    "global": {
+      "branches": 80,
+      "functions": 80,
+      "lines": 80,
+      "statements": 80
+    }
+  }
+},
+  "author": "Karen Perez",
+  "license": "MIT",
+  "devDependencies": {
+    "debug": "^3.1.0",
+    "dotenv": "^4.0.0",
+    "eslint": "^4.16.0",
+    "jest": "^22.1.4",
+    "superagent": "^3.8.2"
+  },
+  "dependencies": {
+    "uuid": "^3.2.1"
+  }
+}
