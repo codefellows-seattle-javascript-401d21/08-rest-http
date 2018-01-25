@@ -18,15 +18,33 @@ storage.create = function(schema, item) {
   });
 };
 
-// storage.fetchOne = function() {
+storage.fetchAll = function(schema) {
+  debug('Fetch all the things!');
 
-// };
-storage.fetchAll = function() {
-    
+  return new Promise((resolve, reject) => {
+    if(!schema || !memory[schema]) return reject(new Error('Cannot fetch all; Schema required'));
+
+    return resolve(memory[schema]);
+  });
 };
 
-storage.update = function() {
-    
+storage.fetchOne = function(schema,item) {
+  debug('Fetch one thing!');
+
+  return new Promise((resolve, reject) => {
+    if(!schema || !item) return reject(new Error('Cannot fetch one; Schema and Item required'));
+    return resolve(memory[schema][item]);
+  });
+};
+
+storage.update = function(schema, item) {
+  debug('updating that item!');
+  return new Promise((resolve, reject) => {
+    if(!item) return reject(new Error('Cannot update this item'));
+
+    memory[schema][item._id] = item;
+    return resolve(item);
+  });
 };
 
 storage.delete = function() {

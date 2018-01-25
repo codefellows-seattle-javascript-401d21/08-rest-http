@@ -37,13 +37,10 @@ Router.prototype.route = function() {
       bodyParser(req),
     ])
       .then(() => {
-        // console.log('hello');
         debug('Successfully parsed the Body and URL');
-        // console.log(req.method);
-        // console.log('this.routes',this.routes[req.method]);
+
         if(typeof this.routes[req.method][req.url.pathname] === 'function') {
           this.routes[req.method][req.url.pathname](req, res);
-          
           return;
         }
 
