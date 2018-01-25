@@ -80,34 +80,46 @@ describe('SERVER MODULE', () => {
 
     describe('GET', () => {
       it('Should respond with "Bad Request" if bad data is sent', () => {
-
+        return superagent.get(path)
+        .catch(err => {
+          expect(err.response.text).toMatch(/Bad Request/);
+        });
       });
       it('Should respond with a status 400', () => {
-
+        return superagent.get(path)
+        .catch(err => {
+          expect(err.response.status).toBe(400);
+        });
       });
     });
 
     describe('PUT', () => {
       it('Should respond with "Bad Request" if bad data is sent', () => {
-
+        return superagent.put(path)
+        .catch(err => {
+          expect(err.response.text).toMatch(/Bad Request/);
+        });
       });
       it('Should respond with a status 400', () => {
-
+        return superagent.put(path)
+        .catch(err => {
+          expect(err.response.status).toBe(400);
+        });
       });
     });
 
     describe('DELETE', () => {
       it('Should respond with "Bad Request" if bad data is sent', () => {
-
+        return superagent.delete(path)
+        .catch(err => {
+          expect(err.response.text).toMatch(/Bad Request/);
+        });
       });
       it('Should respond with a status 400', () => {
-
-      });
-    });
-
-    describe('404', () => {
-      it('Should give a 404 status upon an invalid path', () => {
-
+        return superagent.delete(path)
+        .catch(err => {
+          expect(err.response.status).toBe(400);
+        });
       });
     });
   });
