@@ -29,21 +29,44 @@ module.exports = function(router) {
 
   router.get('/api/v1/note', (req, res) => {
     debug('GET /api/v1/note');
-    try {
 
-      storage.fetchAll('Note')
-        .then(item => {
+    // if the request includes a unique id
+    if(req.url.query._id){
+      storage.fetchOne('Note', req.url.query._id)
+        .then(note => {
           res.writeHead(200, {'Content-Type': 'application/json'});
-          res.write(JSON.stringify(item));
+          res.write(JSON.stringify(note));
+          res.end();
+        })
+        .catch(err => {
+          if(err.message.includes('400')) {
+            res.writeHead(400, {'Content-Type': 'text/plain'});
+            res.write('Bad Request');
+            res.end();
+          }
+          res.writeHead(404, {'Content-Type': 'text/plain'});
+          res.write('Not Found');
           res.end();
         });
-    } catch(err) {
-      debug(`Note not found: ${err}`);
-
-      res.writeHead(404, {'Content-Type': 'text/plain'});
-      res.write('Not Found');
-      res.end();
+      return;
     }
+    // if the request does not specify a unique id
+    storage.fetchAll('Note')
+      .then(item => {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.write(JSON.stringify(item));
+        res.end();
+      })
+      .catch(err => {
+        if(err.message.includes('400')) {
+          res.writeHead(400, {'Content-Type': 'text/plain'});
+          res.write('Bad Request');
+          res.end();
+        }
+        res.writeHead(404, {'Content-Type': 'text/plain'});
+        res.write('Not Found');
+        res.end();
+      });
    
 
   });
