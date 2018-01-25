@@ -31,11 +31,17 @@ storage.create = function(schema, item) {
   });
 }
 
-// storage.fetchOne = function() {
-// }
+storage.fetchOne = function(schema, item) {
+  debug('Fetched a thing');
+
+  return new Promise((resolve, reject) => {
+    if(!schema || !item) return reject(new Error('Cannot find item; Schema and Item required'));
+    return resolve(memory[schema][item]);
+  });
+}
 
 storage.fetchAll = function(schema) {
-  debug('Fetched a thing');
+  debug('Fetched things');
 
   return new Promise((resolve, reject) => {
     if(!schema || !memory[schema]) return reject(new Error('Cannot create a new item; Schema and Item required'));
@@ -47,8 +53,9 @@ storage.update = function(schema, item) {
   debug('Updated a thing');
 
   return new Promise((resolve, reject) => {
-    if(!schema || !memory[schema]) return reject(new Error('Cannot create a new item; Schema and Item required'));
-    return resolve(memory[schema]);
+    if(!schema || !item) return reject(new Error('Cannot update item; Schema and Item required'));
+    memory[schema][item._id] = item;
+    return resolve(/*TODO A THING*/)
   });
 }
 
@@ -57,9 +64,9 @@ storage.delete = function(item) {
 
   return new Promise((resolve, reject) => {
     if(memory[item._id]) {
-      delete memory[item._id]
+      delete memory[schema][item._id] //added schema
       return resolve();
     }
-    return reject(new Error('Cannot delete item; Item required');
+    return reject(new Error('Cannot delete item; Item required'))
   });
 }

@@ -1,8 +1,8 @@
 'use strict';
 
 const debug = require('debug')('http:Router');
-const bodyParser = require('./body-parser');
-const urlParser = require('./url-parser');
+const bodyParser = require('./body-parser.js');
+const urlParser = require('./url-parser.js');
 
 const Router = module.exports = function() {
   this.routes = {
@@ -17,28 +17,28 @@ const Router = module.exports = function() {
   }
 }
 
-['get', 'post', 'put', 'delete'].map(method => {
-  Router.prototype[method] = function(endpoint, callback) {
-    this.routes[method.toUpperCase()][endpoint] = callback;
-  }
-});
+// ['get', 'post', 'put', 'delete'].map(method => {
+//   Router.prototype[method] = function(endpoint, callback) {
+//     this.routes[method.toUpperCase()][endpoint] = callback;
+//   }
+// });
 
-// Router.prototype.get = function(endpoint, callback) {
-//   // debug(`Router: GET ${endpoint} mounted`)
-//   this.routes.GET[endpoint] = callback;
-// }
-//
-// Router.prototype.post = function(endpoint, callback) {
-//   this.routes.POST[endpoint] = callback;
-// }
-//
-// Router.prototype.put = function(endpoint, callback) {
-//   this.routes.PUT[endpoint] = callback;
-// }
-//
-// Router.prototype.delete = function(endpoint, callback) {
-//   this.routes.DELETE[endpoint] = callback;
-// }
+Router.prototype.get = function(endpoint, callback) {
+  // debug(`Router: GET ${endpoint} mounted`)
+  this.routes.GET[endpoint] = callback;
+}
+
+Router.prototype.post = function(endpoint, callback) {
+  this.routes.POST[endpoint] = callback;
+}
+
+Router.prototype.put = function(endpoint, callback) {
+  this.routes.PUT[endpoint] = callback;
+}
+
+Router.prototype.delete = function(endpoint, callback) {
+  this.routes.DELETE[endpoint] = callback;
+}
 
 Router.prototype.route = function() {
   return (req, res) => {
