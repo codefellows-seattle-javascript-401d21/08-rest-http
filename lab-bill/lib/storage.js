@@ -7,7 +7,7 @@ const memory = {};
 
 storage.create = function(schema, item) {
   debug('Created a new thing');
-
+  // console.log(schema,item);
   return new Promise((resolve, reject) => {
     if(!schema || !item) return reject(new Error('Cannot create a new item, schme and item required'));
 

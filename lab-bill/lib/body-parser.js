@@ -12,12 +12,13 @@ module.exports = function (request) {
     request.on('data', data => {
       debug(`Chunked request data: ${data.toString()}`);
       message += data.toString();
+      console.log(message);
     });
 
     request.on('end', () => {
       try {
         request.body = JSON.parse(message);
-        debug( `Complete request body: ${request.body}`);
+        debug(`Complete request body: ${request.body}`);
         return resolve(request);
       } catch(err) {
         return reject(err);

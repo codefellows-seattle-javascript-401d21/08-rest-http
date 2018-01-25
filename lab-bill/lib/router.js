@@ -18,16 +18,16 @@ Router.prototype.get = function (endpoint, callback) {
 };
 
 Router.prototype.post = function (endpoint, callback) {
-  this.routes.GET[endpoint] = callback;
+  this.routes.POST[endpoint] = callback;
 };
 
 
 Router.prototype.put = function (endpoint, callback) {
-  this.routes.GET[endpoint] = callback;
+  this.routes.PUT[endpoint] = callback;
 };
 
 Router.prototype.delete = function (endpoint, callback) {
-  this.routes.GET[endpoint] = callback;
+  this.routes.DELETE[endpoint] = callback;
 };
 
 Router.prototype.route = function() {
@@ -37,10 +37,13 @@ Router.prototype.route = function() {
       bodyParser(req),
     ])
       .then(() => {
+        // console.log('hello');
         debug('Successfully parsed the Body and URL');
-
+        // console.log(req.method);
+        // console.log('this.routes',this.routes[req.method]);
         if(typeof this.routes[req.method][req.url.pathname] === 'function') {
           this.routes[req.method][req.url.pathname](req, res);
+          
           return;
         }
 

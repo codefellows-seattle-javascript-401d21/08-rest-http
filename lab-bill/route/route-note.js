@@ -11,9 +11,11 @@ module.exports = function(router) {
     try {
       
       let newNote = new Note (req.body.title, req.body.content);
+      // console.log(newNote);
 
       storage.create('Note', newNote)
         .then(storedNote => {
+          // console.log('inside .then strorage.create', storedNote);
           res.writeHead(201, {'Content-Type': 'application/json'});
           res.write(JSON.stringify(storedNote));
           res.end();
