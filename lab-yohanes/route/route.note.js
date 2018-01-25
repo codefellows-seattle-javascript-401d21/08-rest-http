@@ -1,31 +1,38 @@
-'use strict'
+'use strict';
 
-const debug = require('debug')('http:body-parser')
+const Note = require('../model/note')
+const storage = require('../lib/storage.js')
+const debug = require('debug')('http:route-note')
 
-module.exports = function (request) {
-  return new Promise((resolve, reject) => {
-    debug('#bodyParser')
-    if(request.method !== 'POST' && request.method !== 'PUT') return resolve(request) //promise method to ensure put, post is in effect
+module.exports = function (router) {
+  router.post('/api/v1/note', (req, res) => {
+    debug('POST /api/vi/note') //modulize url path
 
-    let message = ''
+    try {
+      debugger;
+      let newNote = new Note(req.body.title, req.body.content) //dynamcially creating html elements
 
-    request.on('data', data => {
-      debug(`Chunked request data: ${data.toString()}`)
-      message += data.tostring()
-    })
+      sotrage.create('Note', newNote)
+      .then(storedNote => {
+        res.writeHead(201, {'Content-Type': 'applicatino/json'})
+        res.write(JSON.stringify(storedNote))
+        res.end() //storing note somewhere not sure where or why
+      })
+    } catch (error){
+      debug(`There was a bad requests: ${err}`)
 
-    request.on('.end', () => {
-      try {
-        request.body = JSON.parse(message) //buffer like method to string
-        debug(`Completed request body: ${request.body}`)
-        return resolve(request)
-      } catch (error) {//promise effect resolve
-        return reject(error) //promise effect reject
-      }
-    })
-    request.on('error', err => {
-      debug(`Eror occured on parsing request body: ${error}`)
-      return reject(error)
-    })
+      res.writeHead(400, {'Content-Type': 'text/plain'})
+      res.write('Bad Request')
+      res.end()
+    }
+  })
+  router.get('api/v1/note', (req, res) => {//rout to path
+    
+  })
+  router.put('api/v1/note', (req, res) => {
+
+  })
+  router.delete('api/v1/note', (req, res) => {
+
   })
 }
