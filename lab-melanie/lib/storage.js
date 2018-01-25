@@ -43,21 +43,19 @@ storage.fetchAll = function(schema) {
   });
 };
 
-storage.update = function(schema, itemId, item) {
+storage.update = function(schema, item) {
   debug('Updating a thing');
 
   return new Promise((resolve, reject) => {
-    if(!item) return reject(new Error('Cannot update, need item'));
+    if(!item) return reject(new Error('Cannot update, need id'));
    
-    memory[schema][itemId] = item;
+    memory[schema][item._id] = item;
     return resolve(item);
   });
 };
 
 storage.delete = function(schema, itemId) {
-  // debug('test', memory[schema]);
   debug('Deleting a thing');
-  // debug('this is the id',item.body.id);
 
   return new Promise((resolve, reject) => {
     debug('test', memory[schema]);
