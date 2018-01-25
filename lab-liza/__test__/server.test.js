@@ -15,7 +15,6 @@ describe('Server module', function() {
           .then(res => {
             expect(res.status).toBe(200);
           });
-        //.catch() // usually not needed in a case of successful request
       });
       it('should return a date/time object', () => {
         return superagent.get(':4444/time')
@@ -28,6 +27,5 @@ describe('Server module', function() {
   });
 
   // describe('Invalid Request to the API', () => {
-
   // })
 });
