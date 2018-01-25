@@ -39,8 +39,9 @@ storage.update = function(schema, item) {
 
   return new Promise((resolve, reject) => {
     if(!item._id) return reject(new Error('Cannot update, need item'));
-    if(!memory[schema][item._id]) return reject(new Error('Cannot update, need an id'));
+    // if(!memory[schema][item._id]) return reject(new Error('Cannot update, need an id'));
 
+    memory[schema][item._id] = item;
     return resolve(item);
   });
 };
