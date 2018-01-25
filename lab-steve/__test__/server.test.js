@@ -65,5 +65,61 @@ describe('Server module', () => {
           });
       });
     });
+
+    describe('PUT /api/v1/note', () => {
+      // fail
+      it('should respond with status 400 if no body was provided.', () => {
+        return superagent.put(':5555/api/v1/note')
+          .catch(err => expect(err.status).toBe(400));
+      });
+
+      // fail - query text not allowed
+      it('should respond with status 400 if no _id is present in the body.', () => {
+        return superagent.put(':5555/api/v1/note')
+          .send({title: 'note-x', content: 'data'})
+          .catch(err => expect(err.status).toBe(400));
+      });
+
+      // success - update a note
+      it('should respond with a valid body for a valid put request.', () => {
+        return superagent.post(':5555/api/v1/note')
+          .send({title: 'note5', content: 'Kapow!'})
+          .then(res => {
+            let id = res.body._id;
+            return superagent.put(':5555/api/v1/note')
+              .send({_id: id, title: 'new-note5', content: 'Shazam!'})
+              .then(res2 => {
+                expect(res2.body._id).toBe(id);
+              });
+          });
+      });
+    });
+
+    describe('DELETE /api/v1/note', () => {
+      it('should respond with status 200 for success.', () => {
+        return superagent.post(':5555/api/v1/note')
+          .send({title: 'note6', content: 'Kapow!'})
+          .then(res => {
+            let id = res.body._id;
+            return superagent.delete(`:5555/api/v1/note?_id=${id}`)
+              .then(res2 => expect(res2.status).toBe(200));
+          });
+      });
+
+      it('should respond with the message Note deleted! on success', () => {
+        return superagent.post(':5555/api/v1/note')
+          .send({title: 'note7', content: 'Mmmmmmm'})
+          .then(res => {
+            let id = res.body._id;
+            return superagent.delete(`:5555/api/v1/note?_id=${id}`)
+              .then(res2 => expect(res2.res.text).toMatch(/Note deleted!/));
+          });
+      });
+
+      it('should respond with status 400 if id is not provided in query string', () => {
+        return superagent.delete(`:5555/api/v1/note`)
+          .catch(err => expect(err.status).toBe(400));
+      });
+    });
   });
 });
