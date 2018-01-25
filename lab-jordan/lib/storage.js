@@ -58,13 +58,13 @@ storage.update = function(schema, item) {
   });
 };
 
-storage.delete = function(schema, _id) {
-  debug('Deleted a thing');
+storage.delete = function(schema, item) {
+  debug('Deleting a thing');
   return new Promise((resolve, reject) => {
-    if(!schema || !_id) {
-      return reject(new Error('Cannot delete unknown item; Schema and Item required'));
-    }
-    delete memory[schema][_id];
-    return resolve(_id);
-  })
+    // debug('test', memory);
+    console.log(memory);
+    if(!schema || !item) return reject(new Error('Cannot delete item, item not found'))
+    delete memory[schema][item._id];
+    return resolve(memory[schema]);
+  });
 };

@@ -83,8 +83,9 @@ module.exports = function(router) {
   router.delete('/api/v1/note', (req, res) => {
     debug(`DELETE /api/v1/note`);
     try {
-      storage.delete('note', req.url.query._id)
+      storage.delete('Note', req.body.id)
         .then( () => {
+          console.log(req.body);
           res.writeHead(204, {'Content-Type': 'application/json'});
           res.write('note deleted');
           res.end();
