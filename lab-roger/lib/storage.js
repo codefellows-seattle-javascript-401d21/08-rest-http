@@ -14,15 +14,29 @@ storage.create = function(schema, item) {
 };
 
 
-storage.fetchOne = function(schema, item) {
+storage.fetchAll = function(schema) {
+  debug('in the fetch module', memory);
+  return new Promise((resolve, reject) => {
+    if(!schema) {
+      return reject(new Error('No such catagory'));
+    }
+    return resolve(memory[schema]);
+  });
 
 };
-storage.fetchAll = function(schema, item) {
 
-};
-storage.update = function(schema, item) {
+// storage.update = function(schema, item) {
+//
+// };
+storage.delete = function(schema, id) {
+  debug('in the delete module', memory);
+  return new Promise((resolve, reject) => {
+    if(!memory[schema] || !memory[schema][id]) {
+      return reject(new Error('no item found to delete'));
+    }
+    delete memory[schema][id];
+    return resolve(memory[schema]);
 
-};
-storage.delete = function(schema, item) {
+  });
 
 };
