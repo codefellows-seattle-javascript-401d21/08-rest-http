@@ -6,7 +6,7 @@ const query_parser = require('querystring');
 
 module.exports = function(request) {
   debug('#url parse');
-  request.url = url_parser(request.url);
-  request.url.query = query_parser(request.url.query);
+  request.url = url_parser.parse(request.url);
+  request.url.query = query_parser.parse(request.url.query);
   return Promise.resolve(request);
 };

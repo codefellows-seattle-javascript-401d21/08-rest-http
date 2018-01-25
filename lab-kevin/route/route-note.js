@@ -6,8 +6,8 @@ const debug = require('debug')('http:route-note');
 
 
 module.exports = function(router){
-
-  router.post('/api/v1/note', (req, res) =>{
+  debug('route envoked');
+  router.post('/api/v1/note', (req, res) => {
     let note = new Note(req.body.subject, req.body.comment);
     storage.create('note', note)
       .then(storageNote =>{

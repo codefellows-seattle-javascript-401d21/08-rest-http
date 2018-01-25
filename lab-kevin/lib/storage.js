@@ -1,6 +1,6 @@
 'use strict';
 
-const debug = require('')('http:storage-constructor');
+const debug = require('debug')('http:storage-constructor');
 
 const storage = module.exports = {};
 

@@ -16,7 +16,8 @@ const Router = module.exports = function (){
 };
 
 ['get', 'post', 'put', 'delete'].map(mthd => {
-  Router.prototype[mthd] = function(rute, cb){this.routes[mthd.toUpperCase()][rute] = cb};
+  debug(`router method ${mthd}`);
+  Router.prototype[mthd] = function(rute, cb){this.routes[mthd.toUpperCase()][rute] = cb;};
 });
 
 Router.prototype.route = function(){
@@ -25,9 +26,10 @@ Router.prototype.route = function(){
       url_parser(req),
       body_parser(req),
     ])
-      .then((req, res) =>{
-        let routeFunction = this.route[req.method][req.url.pathname];
-        if( routeFunction === 'function') return routeFunction(req, res);
+      .then(() =>{
+
+        let routeProcess = this.routes[req.method][req.url.pathname];
+        if( typeof routeFunction === 'function') return routeProcess(req, res);
         
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.write('Not Found');
