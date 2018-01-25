@@ -8,6 +8,6 @@ module.exports = function (request) {
 
   request.url = urlParser.parse(request.url);
   request.url.query = queryString.parse(request.url.query);
-  // console.log(request.url);
+  console.log(request.url);
   return Promise.resolve(request);
 };

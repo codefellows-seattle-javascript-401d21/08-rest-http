@@ -24,7 +24,9 @@ storage.fetchAll = function(schema) {
   return new Promise((resolve, reject) => {
     if(!schema || !memory[schema]) return reject(new Error('Cannot fetch all; Schema required'));
 
-    return resolve(memory[schema]);
+    let ids = Object.keys(memory[schema]);
+    return resolve(ids);
+    // return resolve(memory[schema]);
   });
 };
 
@@ -37,7 +39,7 @@ storage.fetchOne = function(schema,item) {
   });
 };
 
-storage.update = function(schema, item) {
+storage.update = function(schema, item, itemId) {
   debug('updating item');
   return new Promise((resolve, reject) => {
     if(!item) return reject(new Error('Cannot update this item'));
@@ -46,12 +48,14 @@ storage.update = function(schema, item) {
   });
 };
 
-storage.delete = function(schema, item) {
+storage.delete = function(schema, id) {
   debug('deleting the item');
   return new Promise((resolve, reject) => {
     console.log('hello');
-    if(!item) return reject(new Error('Cannot delete this item'));
-    memory[schema][item._id] = null;
-    return resolve(item);
+    console.log('id',id);
+    if(!id) return reject(new Error('Cannot delete this item'));
+    console.log('memory.schema.id',memory[schema][id]);
+    delete memory[schema][id];
+    return resolve(memory[schema]);
   });
 };

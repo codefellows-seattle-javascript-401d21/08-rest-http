@@ -52,10 +52,15 @@ module.exports = function(router) {
       }
     } catch (err) {
       debug(`There was a bad request: ${err}`);
-      res.writeHead(400, {'Content-Type': 'text/plain'});
-      res.write('Bad Request');
+      if (err.message.startsWith('400')) {
+        res.writeHead(400, {'Content-Type': 'text/plain'});
+        res.write('Bad Request');
+        res.end();
+        return;
+      }
+      res.writeHead(404, {'Content-Type': 'text/plain'});
+      res.write('Not Found');
       res.end();
-      return;
     }
   });
 
@@ -79,15 +84,17 @@ module.exports = function(router) {
     }
   });
 
-  router.delete('api/v1/note', (req, res) => {
+  router.delete('/api/v1/note', (req, res) => {
     debug('delete /api/v1/note');
+    console.log(req);
+    console.log(req.url.query);
     try {
-      let newNote = new Note(req.body.title, req.body.content);
-      newNote._id = req.body.id;
-      storage.delete('Note', newNote)
+      console.log('inside delete',req.url.query._id);
+      // let newNote = new Note(req.body.title, req.body.content);
+      // newNote._id = req.body.id;
+      storage.delete('Note', req.url.query._id)
         .then(item => {
-          res.writeHead(203, {'Content-Type': 'text/plain'});
-          res.write('delete successful');
+          res.writeHead(204, {'Content-Type': 'text/plain'});
           res.end();
         });
     } catch(err) {
