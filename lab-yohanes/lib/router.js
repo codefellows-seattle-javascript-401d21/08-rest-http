@@ -8,23 +8,16 @@ const urlParser = require('./url-parser')
 
 const Router = module.exports = function () {
   this.routes = {
-    GET: { 
-
-    },
-    POST: {
-
-    },
-    PUT: {
-
-    },
-    DELETE: {
-
-    }
+    GET: {},
+    POST: {},
+    PUT: {},
+    DELETE: {}
   }
 }
 
 Router.prototype.get = function (endpoint, callback) {
   this.routes.GET[enpoint] = callback //square brackets means @ so in this case it when this rotes get @ endpoint, we'll callback
+
 }
 
 Router.prototype.post = function(ednpoint, callback) {
