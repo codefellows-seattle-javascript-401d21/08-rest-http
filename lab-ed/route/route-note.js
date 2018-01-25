@@ -19,19 +19,46 @@ module.exports = function(router) {
         })
     } catch(err) {
       debug(`Bad request: ${err}`)
-
       res.writeHead(400, {'Content-Type': 'text/plain'})
-      res.write('Bad Request')
+      res.write('Bad Request route-note')
       res.end()
     }
   })
 
   router.get('/api/v1/note', (req, res) => {
+
+    try {
+      storage.fetchAll('Note')
+        .then(storedNote => {
+          res.writeHead(201, {'Content-Type': 'application/json'})
+          res.write(JSON.stringify(storedNote))
+          res.end()
+        })
+    } catch(err) {
+      debug(`Bad request: ${err}`)
+      res.writeHead(400, {'Content-Type': 'text/plain'})
+      res.write('Bad Request route-note')
+      res.end()
+    }
   })
+  
 
   router.put('/api/v1/note', (req, res) => {
   })
 
   router.delete('/api/v1/note', (req, res) => {
+    //console.log(req.body)
+    try {
+      storage.delete('Note', req.body.id)
+      res.writeHead(201, {'Content-Type': 'application/json'})
+      res.end()
+        
+    } catch(err) {
+      debug(`Bad request: ${err}`)
+      res.writeHead(400, {'Content-Type': 'text/plain'})
+      res.write('Bad Request delete')
+      res.end()
+    }
+
   })
 }

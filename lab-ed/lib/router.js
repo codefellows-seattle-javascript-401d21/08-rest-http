@@ -5,10 +5,9 @@ const bodyParser = require('./body-parser')
 const urlParser = require('./url-parser')
 
 const Router = module.exports = function() {
-  this.routes = {
-    GET: {
 
-    },
+  this.routes = {
+    GET: {},
     POST: {},
     PUT: {},
     DELETE: {},
@@ -48,9 +47,8 @@ Router.prototype.route = function() {
       })
       .catch(err => {
         debug(`Error parsing the URL or Body: ${err}`)
-
         res.writeHead(400, {'Content-Type': 'text/plain'})
-        res.write('Bad Request')
+        res.write('Bad Request router')
         res.end()
         return
       })
