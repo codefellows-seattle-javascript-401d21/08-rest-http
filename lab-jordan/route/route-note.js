@@ -35,7 +35,7 @@ module.exports = function(router) {
 
     try {
       if (req.url.query._id){
-        storage.fetch('Note', req.url.query._id)
+        storage.fetchOne('Note', req.url.query._id)
         .then(storedNote => {
           res.writeHead(200, {'Content-Type': 'application/json'});
           res.write(JSON.stringify(storedNote));
@@ -61,16 +61,14 @@ module.exports = function(router) {
   })
 
   router.put('/api/v1/note', (req, res) => {
-    debug(`PUT /api/v1/note`);
-
+    debug('PUT /api/v1/note');
     try {
-
       let newNote = new Note(req.body.title, req.body.content);
-
+      newNote._id = req.body.id;
       storage.update('Note', newNote)
-        .then(item => {
-          res.writeHead(204, {'Content-Type': 'application/json'});
-          res.write(JSON.stringify(item));
+        .then(storedNote => {
+          res.writeHead(201, {'Content-Type': 'application/json'});
+          res.write(JSON.stringify(storedNote));
           res.end();
         });
     } catch(err) {
@@ -80,10 +78,24 @@ module.exports = function(router) {
       res.write('Bad Request');
       res.end();
     }
-
   });
 
   router.delete('/api/v1/note', (req, res) => {
-
+    debug(`DELETE /api/v1/note`);
+    try {
+      storage.delete('note', req.url.query._id)
+        .then( () => {
+          res.writeHead(204, {'Content-Type': 'application/json'});
+          res.write('note deleted');
+          res.end();
+          return;
+        });
+    } catch(err) {
+      debug(`There was a bad request: ${err}`);
+      res.writeHead(400, {'Content-Type': 'text/plain'});
+      res.write('Bad Request');
+      res.end();
+      return;
+    }
   })
 }

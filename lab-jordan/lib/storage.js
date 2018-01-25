@@ -50,23 +50,21 @@ storage.fetchAll = function(schema) {
 }
 
 storage.update = function(schema, item) {
-  debug('Updated a thing');
-
+  debug('updating that item!');
   return new Promise((resolve, reject) => {
-    if(!schema || !item) return reject(new Error('Cannot update item; Schema and Item required'));
+    if(!item) return reject(new Error('Cannot update this item'));
     memory[schema][item._id] = item;
-    return resolve(/*TODO A THING*/)
+    return resolve(item);
   });
-}
+};
 
-storage.delete = function(item) {
+storage.delete = function(schema, _id) {
   debug('Deleted a thing');
-
   return new Promise((resolve, reject) => {
-    if(memory[item._id]) {
-      delete memory[schema][item._id] //added schema
-      return resolve();
+    if(!schema || !_id) {
+      return reject(new Error('Cannot delete unknown item; Schema and Item required'));
     }
-    return reject(new Error('Cannot delete item; Item required'))
-  });
-}
+    delete memory[schema][_id];
+    return resolve(_id);
+  })
+};
