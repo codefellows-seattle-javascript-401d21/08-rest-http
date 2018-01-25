@@ -4,6 +4,7 @@ const server = require('../lib/server.js');
 const superagent = require('superagent');
 
 let path = ':3000/api/v1/note';
+let testId;
 
 describe('SERVER MODULE', () => {
   beforeAll(() => server.start(3000));
@@ -49,7 +50,7 @@ describe('SERVER MODULE', () => {
 
     describe('PUT', () => {
       it('Should respond with a status 200', () => {
-        
+
       });
       it('Should respond with the updated Note', () => {
 
