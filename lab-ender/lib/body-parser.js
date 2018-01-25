@@ -18,7 +18,7 @@ module.exports = function(request) {
     request.on('end', () => {
       try {
         request.body = JSON.parse(message);
-        debug(`completed req body: ${request.body}`);
+        debug(`completed req body: ${JSON.stringify(request.body)}`);
         return resolve(request);
       } catch (err) {
         return reject(err);

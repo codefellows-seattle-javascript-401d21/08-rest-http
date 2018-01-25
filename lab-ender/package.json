@@ -9,7 +9,8 @@
   "scripts": {
     "test": "jest",
     "start:watch": "nodemon index.js",
-    "start:debug": "set DEBUG=http* & nodemon index.js"
+    "start:debug": "DEBUG=http* nodemon index.js",
+    "start:debug-win": "set DEBUG=http* & nodemon index.js"
   },
   "keywords": [],
   "author": "",
