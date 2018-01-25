@@ -51,8 +51,7 @@ storage.update = function(schema, item) {
   });
 };
 
-storage.delete = function(schema, item) {
-  // debug('test', memory[schema]);
+storage.delete = function(schema, item) { 
   debug('Deleting a thing');
   debug('this is the id',item.body.id);
   return new Promise((resolve, reject) => {
