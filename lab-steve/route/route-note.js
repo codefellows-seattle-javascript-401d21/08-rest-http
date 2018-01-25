@@ -61,12 +61,48 @@ module.exports = (router) => {
 
   router.put('/api/v1/note', (req, res) => {
     debug('PUT /api/v1/note');
-    // TODO: implement me
+
+    try {
+      if (!req.body._id) throw new Error('Error: Must Have id!');
+      let note = new Note(req.body.title, req.body.content);
+      note._id = req.body._id;
+      storage.update('Note', note)
+        .then(n => {
+          res.writeHead(201, {'Content-Type': 'application/json; charset=utf-8'});
+          res.write(JSON.stringify(n));
+          res.end();
+          return;
+        });
+    } catch(err) {
+      // Ooops
+      debug(`Bad Request: ${err}`);
+      res.writeHead(400, {'Content-Type': 'text/plain'});
+      res.write('Bad Request');
+      res.end();
+      return;
+    }
   });
 
   router.delete('/api/v1/note', (req, res) => {
     debug('DELETE /api/v1/note');
-    // TODO: implement me
+
+    try {
+      if (!req.url.query._id) throw new Error('Error: Must Have id!');
+      storage.delete('Note', req.url.query._id)
+        .then(() => {
+          res.writeHead(200, {'Content-Type': 'text/plain'});
+          res.write('Note deleted!');
+          res.end();
+          return;
+        });
+    } catch(err) {
+      // Ooops
+      debug(`Bad Request: ${err}`);
+      res.writeHead(400, {'Content-Type': 'text/plain'});
+      res.write('Bad Request');
+      res.end();
+      return;
+    }
   });
 };
 
