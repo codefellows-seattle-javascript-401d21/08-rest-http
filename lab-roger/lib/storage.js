@@ -25,9 +25,18 @@ storage.fetchAll = function(schema) {
 
 };
 
-// storage.update = function(schema, item) {
-//
-// };
+storage.update = function(schema, newNote) {
+  debug('in the update module', memory);
+  return new Promise((resolve, reject) => {
+    if(!schema || !newNote) {
+      return reject(new Error('no item found to delete'));
+    }
+    memory[schema][newNote.id] = newNote;
+    return resolve(memory[schema]);
+  });
+};
+
+
 storage.delete = function(schema, id) {
   debug('in the delete module', memory);
   return new Promise((resolve, reject) => {
@@ -36,6 +45,20 @@ storage.delete = function(schema, id) {
     }
     delete memory[schema][id];
     return resolve(memory[schema]);
+
+  });
+
+};
+
+storage.fetchOne = function(schema, id) {
+  debug('in the fetchOne module', schema);
+  debug('id to look for', id);
+  return new Promise((resolve, reject) => {
+    if(!memory[schema]) {
+      return reject(new Error('no item found'));
+    }
+    //let objtosend = memory[schema][id];
+    return resolve(memory[schema][id]);
 
   });
 

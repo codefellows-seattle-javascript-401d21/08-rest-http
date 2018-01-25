@@ -48,7 +48,49 @@ module.exports = function(router) {
 
   });
 
+  // router.get('/api/v1/note', (req, res) => {
+  //
+  //
+  //   try {
+  //     storage.fetchOne('Note', req.url.query)
+  //       .then(oneNote => {
+  //         debug('Fetch One', oneNote);
+  //         res.writeHead(201, {'COntent-Type': 'application/json'});
+  //         res.write(JSON.stringify(oneNote));
+  //         res.end();
+  //       });
+  //
+  //   } catch(err) {
+  //     debug('error from get');
+  //     res.writeHead(400, {'Content-Type': 'text/plain'});
+  //     res.write('Note not found');
+  //     res.end();
+  //   }
+  //
+  // });
+
   router.put('/api/v1/note', (req, res) => {
+
+    try {
+      let replaceNote = new Note(req.body.title, req.body.content);
+      replaceNote.id = req.body.id;
+
+
+      storage.update('Note', replaceNote)
+
+        .then(oneNote => {
+          debug('one note', oneNote);
+          res.writeHead(200, {'COntent-Type': 'text/plain'});
+          res.write('Note Ammended');
+          res.end();
+        });
+
+    } catch(err) {
+      debug('error from delete');
+      res.writeHead(400, {'Content-Type': 'text/plain'});
+      res.write('Note not found');
+      res.end();
+    }
 
   });
 
