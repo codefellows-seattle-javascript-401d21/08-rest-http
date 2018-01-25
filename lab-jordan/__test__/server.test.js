@@ -31,19 +31,25 @@ describe('SERVER MODULE', () => {
 
     describe('GET', () => {
       it('Should respond with a status 200', () => {
-
+        return superagent.get(path)
+        .then(res => {
+          expect(res.status).toBe(200);
+        });
       });
       it('Should respond with all Notes', () => {
-
+        return superagent.get(path)
+        .then(res => {
+          expect(JSON.parse(res.text));
+        });
       });
       it('Should respond with a single Note', () => {
-
+        // not sure how to test with id
       });
     });
 
     describe('PUT', () => {
       it('Should respond with a status 200', () => {
-
+        
       });
       it('Should respond with the updated Note', () => {
 
@@ -60,6 +66,8 @@ describe('SERVER MODULE', () => {
     });
 
   });
+
+
 
   describe('INVALID REQUESTS', () => {
     describe('POST', () => {
