@@ -55,6 +55,8 @@ module.exports = function(router) {
 
       let newNote = new Note(req.body.title, req.body.content);
       
+      newNote._id = req.body.id;
+
       storage.update('Note', newNote)
         .then(item => {
           res.writeHead(204, {'Content-Type': 'application/json'});
@@ -73,11 +75,9 @@ module.exports = function(router) {
 
   router.delete('/api/v1/note', (req, res) => {
     debug('DELETE /api/v1/note');
-    // debug(`query id ${req.url.query._id}`);
-
+    
     try {
-
-      storage.delete('Note', req.url.query._id)
+      storage.delete('Note', req)
         .then(item => {
           res.writeHead(204, {'Content-Type': 'application/json'});
           res.write(JSON.stringify(item));

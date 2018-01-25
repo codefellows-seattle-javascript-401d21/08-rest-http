@@ -38,22 +38,23 @@ storage.update = function(schema, item) {
   debug('Updating a thing');
 
   return new Promise((resolve, reject) => {
-    if(!item._id) return reject(new Error('Cannot update, need item'));
-    // if(!memory[schema][item._id]) return reject(new Error('Cannot update, need an id'));
-
+    if(!item) return reject(new Error('Cannot update, need item'));
+   
     memory[schema][item._id] = item;
     return resolve(item);
   });
 };
 
 storage.delete = function(schema, item) {
+  // debug('test', memory[schema]);
   debug('Deleting a thing');
-  
+  debug('this is the id',item.body.id);
+
   return new Promise((resolve, reject) => {
-    if(memory[schema][item._id]) {
-      delete memory[schema][item._id];
-      return resolve();
-    }
-    return reject(new Error('Cannot delete item, item not found'));
+    debug('test', memory[schema]);
+    if(!schema || !item) return reject(new Error('Cannot delete item, item not found'))
+    
+    delete memory[schema][item.body.id];
+    return resolve(memory[schema]);
   });
 };
