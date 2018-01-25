@@ -31,17 +31,17 @@ storage.create = function(schema, item) {
   });
 };
 
-storage.fetchOne = function(schema, item) {
+storage.fetchOne = function(schema, itemID) {
   debug('Got the thing');
 
   return new Promise((resolve, reject) => {
-    if(!schema || !item) return reject(new Error('Cannot get item; Schema and Item required'));
+    if(!schema || !itemID) return reject(new Error('Cannot get item; Schema and itemID required'));
 
     if(!memory[schema]) return reject(new Error('Cannot get item; Schema does not exist'));
 
-    if(!memory[schema][item._id]) return reject(new Error('Cannot get item; Item does not exist'));
+    if(!memory[schema][itemID]) return reject(new Error('Cannot get item; itemID does not exist'));
 
-    return resolve(memory[schema][item._id]);
+    return resolve(memory[schema][itemID]);
   });
 };
 
@@ -66,7 +66,7 @@ storage.update = function(schema, item) {
     if(!memory[schema] || !memory[schema][item._id]){
       debug(`The thing didn't exist...`);
       storage.create(schema, item);
-      return (memory[schema][item._id])
+      return (memory[schema][item._id]);
     } 
 
     memory[schema][item._id] = item;
@@ -74,15 +74,15 @@ storage.update = function(schema, item) {
   });
 };
 
-storage.delete = function(schema, item) {
+storage.delete = function(schema, itemID) {
   debug('Deleted the thing');
 
   return new Promise((resolve, reject) => {
-    if(!schema || !item) return reject(new Error('Cannot delete item; Schema and Item required'));
+    if(!schema || !itemID) return reject(new Error('Cannot delete item; Schema and Item required'));
 
-    if(!memory[schema] || !memory[schema][item._id]) return reject(new Error('Cannot delete item; Schema or Item does not exist'));
+    if(!memory[schema] || !memory[schema][itemID]) return reject(new Error('Cannot delete item; Schema or itemID does not exist'));
 
-    delete memory[schema][item._id];
+    delete memory[schema][itemID];
     return resolve();
   });
 };
