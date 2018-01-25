@@ -5,7 +5,26 @@ const server = require('../lib/server');
 const superagent = require('superagent');
 require('jest');
 
-// let noteID;
+describe('ServerIntegration Testing', function() {
+  beforeAll(() => server.start(4000));
+  afterAll(() => server.stop());
+
+  describe('Valid requests', () => {
+    describe('POST /api/v1/note', () => {
+
+    });
+    describe('GET /api/v1/note', () => {
+
+    });
+    describe('GET /api/v1/note?_id<record id>', () => {
+
+    });
+  });
+
+  describe('Invalid requests', () => {
+
+  });
+});
 
 describe('Server Module', function() {
   beforeAll(() => server.start(4444));
@@ -22,7 +41,6 @@ describe('Server Module', function() {
       return superagent.post(':4444/api/v1/note')
         .send({title: 'one', content: 'hello'})
         .then(res => {
-          // noteId = res.body._id;
           expect(res.body.content).toBe('hello');
         });
     });
