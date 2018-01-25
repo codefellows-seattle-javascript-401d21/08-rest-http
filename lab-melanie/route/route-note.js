@@ -99,19 +99,18 @@ module.exports = function(router) {
   router.delete('/api/v1/note', (req, res) => {
     debug('DELETE /api/v1/note');
     
-    try {
-      storage.delete('Note', req)
-        .then(item => {
-          res.writeHead(204, {'Content-Type': 'application/json'});
-          res.write(JSON.stringify(item));
-          res.end();
-        });
-    } catch(err) {
-      debug(`There was a bad request: ${err}`);
+    storage.delete('Note', req.url.query.id)
+      .then(item => {
+        res.writeHead(204, {'Content-Type': 'application/json'});
+        res.write(JSON.stringify(item));
+        res.end();
+      })
+      .catch(err => {
+        debug(`There was a bad request: ${err}`);
 
-      res.writeHead(400, {'Content-Type': 'text/plain'});
-      res.write('Bad Request');
-      res.end();
-    }
+        res.writeHead(400, {'Content-Type': 'text/plain'});
+        res.write('Bad Request');
+        res.end();
+      });
   });
 };

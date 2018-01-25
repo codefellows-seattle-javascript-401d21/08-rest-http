@@ -43,13 +43,13 @@ storage.fetchAll = function(schema) {
   });
 };
 
-storage.update = function(schema, itemID, item) {
+storage.update = function(schema, itemId, item) {
   debug('Updating a thing');
 
   return new Promise((resolve, reject) => {
     if(!item) return reject(new Error('Cannot update, need item'));
    
-    memory[schema][item._id] = item;
+    memory[schema][itemId] = item;
     return resolve(item);
   });
 };
@@ -57,13 +57,13 @@ storage.update = function(schema, itemID, item) {
 storage.delete = function(schema, itemId) {
   // debug('test', memory[schema]);
   debug('Deleting a thing');
-  debug('this is the id',item.body.id);
+  // debug('this is the id',item.body.id);
 
   return new Promise((resolve, reject) => {
     debug('test', memory[schema]);
-    if(!schema || !item) return reject(new Error('Cannot delete item, item not found'))
+    if(!schema || !itemId) return reject(new Error('Cannot delete item, item not found'));
     
-    delete memory[schema][item.body.id];
-    return resolve(memory[schema]);
+    delete memory[schema][itemId];
+    return resolve();
   });
 };
