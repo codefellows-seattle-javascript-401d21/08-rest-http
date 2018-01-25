@@ -38,15 +38,20 @@ storage.fetchOne = function(schema,item) {
 };
 
 storage.update = function(schema, item) {
-  debug('updating that item!');
+  debug('updating item');
   return new Promise((resolve, reject) => {
     if(!item) return reject(new Error('Cannot update this item'));
-
     memory[schema][item._id] = item;
     return resolve(item);
   });
 };
 
-storage.delete = function() {
-    
+storage.delete = function(schema, item) {
+  debug('deleting the item');
+  return new Promise((resolve, reject) => {
+    console.log('hello');
+    if(!item) return reject(new Error('Cannot delete this item'));
+    memory[schema][item._id] = null;
+    return resolve(item);
+  });
 };
