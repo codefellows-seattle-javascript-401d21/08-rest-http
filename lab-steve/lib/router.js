@@ -5,12 +5,9 @@ const bodyParser = require('./body-parser');
 const urlParser = require('./url-parser');
 
 const Router = module.exports = function () {
+  // Endpoints and callbaccks are added by the user of Route
   this.routes = {
-    GET: {
-      // Just a hard-coded example
-      '/api/v1/note': (req, res) => {},
-      // '/api/v1/note/:id': (req, res) => {},
-    },
+    GET: {},
     POST: {},
     PUT: {},
     DELETE: {},
@@ -19,12 +16,14 @@ const Router = module.exports = function () {
 
 // Add the appropriate http method functions
 ['get', 'post', 'put', 'delete'].map(method => {
-  Router.prototype[method] = function(endpoint, callback) {
+  Router.prototype[method] = function (endpoint, callback) {
     this.routes[method.toUpperCase()][endpoint] = callback;
   };
 });
 
-Router.prototype.route = function() {
+// Do it!
+Router.prototype.route = function () {
+  debug('Starting to route!');
   return (req, res) => {
     Promise.all([
       urlParser(req),
@@ -33,7 +32,9 @@ Router.prototype.route = function() {
       .then(() => {
         debug('Successfully parsed the Body and URL');
 
+        // Only call the route callback if it is valid
         if(typeof this.routes[req.method][req.url.pathname] === 'function') {
+          debug('req.url.pathname:', req.url.pathname);
           this.routes[req.method][req.url.pathname](req, res);
           return;
         }
@@ -53,3 +54,4 @@ Router.prototype.route = function() {
       });
   };
 };
+

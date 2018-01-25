@@ -9,3 +9,4 @@ module.exports = function(title, content) {
   this._id = uuid();
   debug(`Created a note: ${this}`);
 };
+

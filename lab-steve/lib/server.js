@@ -6,6 +6,7 @@ const Router = require('./router');
 
 // Router setup
 const router = new Router();
+// Dependency injection
 require('../route/route-note')(router);
 
 // Application setup
@@ -15,3 +16,4 @@ const app = http.createServer(router.route());
 const server = module.exports = {};
 server.start = (port, cb) => app.listen(port, cb);
 server.stop = (cb) => app.close(cb);
+
