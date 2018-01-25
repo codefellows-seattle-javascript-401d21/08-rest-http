@@ -1,0 +1,34 @@
+{
+  "name": "08-rest-http",
+  "version": "1.0.0",
+  "description": "create a rest http server",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest --verbose",
+    "start:watch": "node index.js",
+    "start:debug": "DEBUG=http* nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerdav/08-rest-http.git"
+  },
+  "author": "RND",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rogerdav/08-rest-http/issues"
+  },
+  "homepage": "https://github.com/rogerdav/08-rest-http#readme",
+  "devDependencies": {
+    "debug": "^3.1.0",
+    "dotenv": "^4.0.0",
+    "eslint": "^4.16.0",
+    "jest": "^22.1.4",
+    "superagent": "^3.8.2"
+  },
+  "dependencies": {
+    "uuid": "^3.2.1"
+  }
+}
