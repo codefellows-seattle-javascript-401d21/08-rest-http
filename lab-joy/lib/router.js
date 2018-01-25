@@ -4,10 +4,9 @@ const debug = require('debug')('http:Router');
 const bodyParser = require('./body-parser');
 const urlParser = require('./url-parser');
 
-const Router = module.exports = function () {
+const Router = module.exports = function() {
     this.routes = {
         GET: {
-            // Just a hard-coded example
             // '/api/v1/note': (req, res) => {},
             // '/api/v1/note/:id': (req, res) => {},
         },
@@ -24,23 +23,26 @@ const Router = module.exports = function () {
 // })
 
 Router.prototype.get = function (endpoint, callback) {
-    // debug(`Router: GET ${endpoint} mounted`)
+    debug(`Router: GET ${endpoint} mounted`);
     this.routes.GET[endpoint] = callback;
 };
 
 Router.prototype.post = function (endpoint, callback) {
+    debug(`Router: POST ${endpoint} mounted`);
     this.routes.POST[endpoint] = callback;
 };
 
 Router.prototype.put = function (endpoint, callback) {
+    debug(`Router: PUT ${endpoint} mounted`);
     this.routes.PUT[endpoint] = callback;
 };
 
 Router.prototype.delete = function (endpoint, callback) {
+    debug(`Router: DELETE ${endpoint} mounted`);
     this.routes.DELETE[endpoint] = callback;
 };
 
-Router.prototype.route = function () {
+Router.prototype.route = function() {
     return (req, res) => {
         Promise.all([
             urlParser(req),
@@ -54,15 +56,14 @@ Router.prototype.route = function () {
                     return;
                 }
 
-                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.writeHead(404, {'Content-Type': 'text/plain'});
                 res.write('Not Found');
                 res.end();
                 return;
             })
             .catch(err => {
                 debug(`There was an error parsing the URL or Body: ${err}`);
-
-                res.writeHead(400, { 'Content-Type': 'text/plain' });
+                res.writeHead(400, {'Content-Type': 'text/plain'});
                 res.write('Bad Request');
                 res.end();
                 return;
