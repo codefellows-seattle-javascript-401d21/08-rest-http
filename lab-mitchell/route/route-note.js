@@ -18,7 +18,7 @@ module.exports = function(router) {
         res.end();
       });
     } catch(err) {
-      debug(`THere was a bad request: ${err}`);
+      debug(`There was a bad request: ${err}`);
 
       res.writeHead(400, {'Content-Type': 'text/plain'});
       res.write('Bad Request');
@@ -26,15 +26,29 @@ module.exports = function(router) {
     }
   });
 
+  //check out httpie since postman is a little weird or check out tutorials
   router.get('/api/v1/note', (req, res) => {
+    debug('GET /api/v1/note');
 
+    res.writeHead(400, { 'Content-Type': 'text/plain' });
+    res.write('Bad Request');
+    res.end();
   });
 
   router.put('/api/v1/note', (req, res) => {
+    debug('PUT /api/v1/note');
 
+    res.writeHead(400, { 'Content-Type': 'text/plain' });
+    res.write('Bad Request');
+    res.end();
   });
 
+  // use note_id to delete
   router.delete('/api/v1/note', (req, res) => {
+    debug('DELETE /api/v1/note');
 
+    res.writeHead(400, { 'Content-Type': 'text/plain' });
+    res.write('Bad Request');
+    res.end();
   });
 };
