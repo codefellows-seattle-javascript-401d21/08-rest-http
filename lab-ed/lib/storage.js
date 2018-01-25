@@ -26,24 +26,28 @@ storage.create = function(schema, item) {
     return resolve(memory[schema][item._id])
   })
 }
-
 storage.fetchOne = function() {
 }
 
 storage.fetchAll = function() {
   return new Promise((resolve) => {
-
     return resolve(memory)
   })
 }
 
-storage.update = function() {
+storage.update = function(schema, item) {
+  return new Promise((resolve, reject) => {
+    if(!schema || !item) return reject(new Error('Cannot create a new item; Schema and Item required'))
+    if(!memory[schema]) memory[schema] = {}
+    memory[schema][item._id] = item
+    return resolve(memory[schema][item._id])
+  })
 }
 
 storage.delete = function(schema, id) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
+    if (!schema || !id) return reject(new Error('Cannot delete item; Schema and ID required'))
     delete memory[schema][id]
     return resolve(id)
-    
   })
 }

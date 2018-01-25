@@ -7,7 +7,6 @@ const debug = require('debug')('http:route-note')
 module.exports = function(router) {
   router.post('/api/v1/note', (req, res) => {
     debug('POST /api/v1/note')
-
     try {
       let newNote = new Note(req.body.title, req.body.content)
 
@@ -26,7 +25,6 @@ module.exports = function(router) {
   })
 
   router.get('/api/v1/note', (req, res) => {
-
     try {
       storage.fetchAll('Note')
         .then(storedNote => {
@@ -44,10 +42,24 @@ module.exports = function(router) {
   
 
   router.put('/api/v1/note', (req, res) => {
+    try{
+      let newNote = new Note(req.body.title, req.body.content)
+      newNote._id = req.body.id
+      storage.update('Note', newNote)
+        .then(storedNote => {
+          res.writeHead(201, {'Content-Type': 'application/json'})
+          res.write(JSON.stringify(storedNote))
+          res.end()
+        })
+    } catch(err) {
+      debug(`There was a bad request: ${err}`)
+      res.writeHead(400, {'Content-Type': 'text/plain'})
+      res.write('Bad Request')
+      res.end()
+    } 
   })
 
   router.delete('/api/v1/note', (req, res) => {
-    //console.log(req.body)
     try {
       storage.delete('Note', req.body.id)
       res.writeHead(201, {'Content-Type': 'application/json'})
@@ -59,6 +71,5 @@ module.exports = function(router) {
       res.write('Bad Request delete')
       res.end()
     }
-
   })
 }
