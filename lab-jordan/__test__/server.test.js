@@ -3,7 +3,7 @@
 const server = require('../lib/server.js');
 const superagent = require('superagent');
 
-
+let path = ':3000/api/v1/note';
 
 describe('SERVER MODULE', () => {
   beforeAll(() => server.start(3000));
@@ -13,10 +13,18 @@ describe('SERVER MODULE', () => {
 
     describe('POST', () => {
       it('Should respond with a status of 200 upon success', () => {
-
+        return superagent.post(path)
+        .send({title: 'test title', content: 'test content'})
+        .then(res => {
+          expect(res.status).toBe(201);
+        });
       });
       it('Should post a Note and return it', () => {
-
+        return superagent.post(path)
+        .send({title: 'test title', content: 'test content'})
+        .then(res => {
+          expect(res.body.title).toMatch(/test title/);
+        });
       });
 
     });
@@ -57,10 +65,16 @@ describe('SERVER MODULE', () => {
     describe('POST', () => {
 
       it('Should respond with "Bad Request" if bad data is sent', () => {
-
+        return superagent.post(path)
+        .catch(err => {
+          expect(err.response.text).toMatch(/Bad Request/);
+        });
       });
-      it('Should respond with a status 200', () => {
-
+      it('Should respond with a status 400', () => {
+        return superagent.post(path)
+        .catch(err => {
+          expect(err.response.status).toBe(400);
+        });
       });
     });
 
@@ -68,7 +82,7 @@ describe('SERVER MODULE', () => {
       it('Should respond with "Bad Request" if bad data is sent', () => {
 
       });
-      it('Should respond with a status 200', () => {
+      it('Should respond with a status 400', () => {
 
       });
     });
@@ -77,7 +91,7 @@ describe('SERVER MODULE', () => {
       it('Should respond with "Bad Request" if bad data is sent', () => {
 
       });
-      it('Should respond with a status 200', () => {
+      it('Should respond with a status 400', () => {
 
       });
     });
@@ -86,7 +100,7 @@ describe('SERVER MODULE', () => {
       it('Should respond with "Bad Request" if bad data is sent', () => {
 
       });
-      it('Should respond with a status 200', () => {
+      it('Should respond with a status 400', () => {
 
       });
     });
