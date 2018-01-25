@@ -37,6 +37,13 @@ describe('Server module', () => {
     });
 
     describe('GET /api/v1/note', () => {
+      // success - provide status 200
+      it('should return status 200 on successful get', () => {
+        // this works since the post tests above added some test notes
+        return superagent.get(':5555/api/v1/note')
+          .then(res => expect(res.status).toBe(200));
+      });
+
       // success - fetch all the notes
       it('should get all notes when no id is provided', () => {
         // this works since the post tests above added some test notes
