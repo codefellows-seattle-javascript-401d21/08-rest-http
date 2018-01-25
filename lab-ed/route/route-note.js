@@ -28,7 +28,7 @@ module.exports = function(router) {
     try {
       storage.fetchAll('Note')
         .then(storedNote => {
-          res.writeHead(201, {'Content-Type': 'application/json'})
+          res.writeHead(200, {'Content-Type': 'application/json'})
           res.write(JSON.stringify(storedNote))
           res.end()
         })
@@ -47,7 +47,7 @@ module.exports = function(router) {
       newNote._id = req.body.id
       storage.update('Note', newNote)
         .then(storedNote => {
-          res.writeHead(201, {'Content-Type': 'application/json'})
+          res.writeHead(204, {'Content-Type': 'application/json'})
           res.write(JSON.stringify(storedNote))
           res.end()
         })
@@ -62,7 +62,7 @@ module.exports = function(router) {
   router.delete('/api/v1/note', (req, res) => {
     try {
       storage.delete('Note', req.body.id)
-      res.writeHead(201, {'Content-Type': 'application/json'})
+      res.writeHead(204, {'Content-Type': 'application/json'})
       res.end()
         
     } catch(err) {
