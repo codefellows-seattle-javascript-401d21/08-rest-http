@@ -43,13 +43,18 @@ storage.fetchAll = function (schema) {
     });
 };
 
-storage.update = function () {
+storage.update = function (schema, item) {
     debug('Upated item');
-
-
+    return new Promise((resolve, reject) => {
+        if (!schema || !item) return reject(new Error('No item to update.'));
+        return resolve(memory[schema][item._id]);
+    });
 };
 
-storage.delete = function () {
+storage.delete = function (schema, item) {
     debug('Deleted item');
-
+    return new Promise((resolve, reject) => {
+        if (!schema || !item) return reject(new Error('No item to delete.'));
+        return resolve(memory[schema][item.id]);
+    });
 };
