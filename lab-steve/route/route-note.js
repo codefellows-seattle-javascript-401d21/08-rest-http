@@ -39,16 +39,16 @@ module.exports = (router) => {
             res.end();
             return;
           });
+      } else {
+        // No _id, fetch them all
+        storage.fetchAll('Note')
+          .then(notes => {
+            res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+            res.write(JSON.stringify(notes));
+            res.end();
+            return;
+          });
       }
-
-      // No _id, fetch them all
-      storage.fetchAll('Note')
-        .then(notes => {
-          res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
-          res.write(JSON.stringify(notes));
-          res.end();
-          return;
-        });
     } catch (err) {
       // Ooops
       debug(`Bad Request: ${err}`);
