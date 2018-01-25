@@ -6,6 +6,7 @@ module.exports = function (request) {
   return new Promise((resolve, reject) => {
     debug('#bodyParser');
     if (request.method !== 'POST' && request.method !== 'PUT') return resolve(request);
+    
 
     let message = '';
 
