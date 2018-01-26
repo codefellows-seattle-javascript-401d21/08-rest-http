@@ -1,7 +1,5 @@
 'use strict';
 
-'use strict';
-
 const uuid = require('uuid/v4');
 const debug = require('debug')('http:note-constructor');
 
