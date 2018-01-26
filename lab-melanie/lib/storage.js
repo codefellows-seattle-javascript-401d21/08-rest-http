@@ -35,7 +35,7 @@ storage.fetchAll = function(schema) {
   debug('Fetch All things');
 
   return new Promise((resolve, reject) => {
-    if(!schema) return reject(new Error('Cannot get item, need a schema'));
+    if(!schema) return reject(new Error('400, Cannot get item, need a schema'));
     if(!memory[schema]) return reject(new Error('404, cannot complete, no records match schema'));
 
     let ids = Object.keys(memory[schema]);
@@ -47,7 +47,7 @@ storage.update = function(schema, item) {
   debug('Updating a thing');
 
   return new Promise((resolve, reject) => {
-    if(!item) return reject(new Error('Cannot update, need id'));
+    if(!item) return reject(new Error('400, Cannot update, need id'));
    
     memory[schema][item._id] = item;
     return resolve(item);
@@ -59,7 +59,8 @@ storage.delete = function(schema, itemId) {
 
   return new Promise((resolve, reject) => {
     debug('test', memory[schema]);
-    if(!schema || !itemId) return reject(new Error('Cannot delete item, item not found'));
+    if(!schema) return reject(new Error('400, Cannot delete item, need schema'));
+    if(!itemId) return reject(new Error('404, not found'));
     
     delete memory[schema][itemId];
     return resolve();
