@@ -8,78 +8,129 @@ const debug = require('debug')('http:route-note')
 module.exports = function(router) {
   router.post('/api/v1/note', (req, res) => {
     debug('POST /api/v1/note')
+    let newNote
 
     try {
-      debugger;
-      let newNote = new Note(req.body.title, req.body.content)
-
-      storage.create('Note', newNote)
-      .then(storedNote => {
-        res.writeHead(201, {'Content-Type': 'application/json'})
-        res.write(JSON.stringify(storedNote))
-        res.end()
-      })
-    } catch(err) {
+      newNote = new Note(req.body.title, req.body.content)
+    } catch(err){
       debug(`There was a bad request: ${err}`)
+
       res.writeHead(400, {'Content-Type': 'text/plain'})
       res.write('Bad Request')
       res.end()
+      return
+    }
+
+    storage.create('Note', newNote)
+    .then(storedNote => {
+      res.writeHead(201, {'Content-Type': 'application/json'})
+      res.write(JSON.stringify(storedNote))
+      res.end()
+    })
+    .catch(err => {
+      res.writeHead(400, {'Content-Type': 'text/plain'})
+      res.write('Bad Request')
+      res.end()
+    })
+  })
+
+
+
+  router.get(`/api/v1/note`, (req, res) => {
+
+
+    if(req.url.query._id) {
+      storage.fetchOne('Note', req.url.query._id)
+      .then(note => {
+        res.writeHead(200, {'Content-Type': 'application/json'})
+        res.write(JSON.stringify(note))
+        res.end()
+      })
+      .catch(err => {
+        if(err.message.startsWith('400')){
+          res.writeHead(400, {'Content-Type': 'text/plain'})
+          res.write('Bad Request')
+          res.end()
+          return
+        }
+
+        res.writeHead(404, {'Content-Type': 'text/plain'})
+        res.write('Not Found')
+        res.end()
+      })
+      return
+
+    }
+
+    storage.fetchAll('Note')
+    .then(ids => {
+      res.writeHead(200, {'Content-Type': 'application/json'})
+      res.write(JSON.stringify(ids))
+      res.end()
+    })
+    .catch(err => {
+      if(err.message.startsWith('400')){
+        res.writeHead(400, {'Content-Type': 'text/plain'})
+        res.write('Bad Request')
+        res.end()
+        return
+      }
+
+      res.writeHead(404, {'Content-Type': 'text/plain'})
+      res.write('Not Found')
+      res.end()
+    })
+  })
+
+
+  router.put('/api/v1/note', (req, res) => {
+
+    if(req.url.query._id) {
+    storage.update('Note', req.url.query._id, req.body)
+    .then(updateText => {
+      res.writeHead(200, {'Content-Type': 'application/json'})
+      res.write(JSON.stringify(updateText))
+      res.end()
+    }).catch(err => {
+      if(err.message.startsWith('400')){
+        res.writeHead(400, {'Content-Type': 'text/plain'})
+        res.write('Bad Request')
+        res.end()
+        return
+      }
+
+      res.writeHead(404, {'Content-Type': 'text/plain'})
+      res.write('Not Found')
+      res.end()
+    })
     }
   })
 
-  router.get(`/api/v1/note`, (req, res) => {    
-    try {
-        let getNote = new Note()
-        getNote.title = "new title";
-        getNote.content = "here is some content"
-        res.writeHead(200, {'Content-Type': 'application/json'})
-        res.write(storage.fetchOne(req.url.query.item))
-        res.end()
-        storage.fetchOne(req.url.query.item);
-      } catch(err) {
-        debug(`There was a bad request: ${err}`)
-        res.writeHead(400, {'Content-Type': 'text/plain'})
-        res.write('Bad Request')
-        res.end()
-      }
-
-  })
-
-//   dont touch
-// must be http://localhost:3000/api/v1/note?note=jamedscdsdsdcd
-  router.put('/api/v1/note', (req, res) => {
-    try {
-        let getNote = new Note()
-        getNote.title = "new title";
-        getNote.content = "here is some content"
-        res.writeHead(200, {'Content-Type': 'application/json'})
-        res.writeHead(200, {'Content-Type': 'text/plain'})
-        res.write(storage.update(req.url.query,req.url.query.note))
-        res.end()
-        // storage.fetchOne();
-      } catch(err) {
-        debug(`There was a bad request: ${err}`)
-        res.writeHead(400, {'Content-Type': 'text/plain'})
-        res.write('Bad Request')
-        res.end()
-      }
-  })
-
   router.delete(`/api/v1/note`, (req,res) => {
-    try {
-        let getNote = new Note()
-        getNote.title = "new title";
-        getNote.content = "here is some content"
+
+    if(req.url.query._id) {
+      storage.delete('Note', req.url.query._id)
+      .then(deletion => {
         res.writeHead(200, {'Content-Type': 'text/plain'})
-        res.write('success')
+        res.write('deleted')
         res.end()
-        storage.delete(req.url.query.note)
-       } catch(err) {
-        debug(`There was a bad request: ${err}`)
-        res.writeHead(400, {'Content-Type': 'text/plain'})
-        res.write('Bad Request')
+      }).catch(err => {
+        if(err.message.startsWith('400')){
+          res.writeHead(400, {'Content-Type': 'text/plain'})
+          res.write('Bad Request')
+          res.end()
+          return
+        }
+  
+        res.writeHead(404, {'Content-Type': 'text/plain'})
+        res.write('Not Found')
         res.end()
+      })
       }
+
+
+
+
 
   })
 

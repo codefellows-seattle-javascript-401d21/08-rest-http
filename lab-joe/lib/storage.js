@@ -5,11 +5,7 @@ const debug = require('debug')('http:storage')
 const storage = module.exports = {}
 // const memory = {}
 
-let memory = {'first':'this is the first',
-'second':'this is the second',
-'third':'this is the third',
-'fourt':'this is the fourth'
-}
+let memory = {}
 
 // memory = {
 //   'Notes': {
@@ -24,7 +20,6 @@ let memory = {'first':'this is the first',
 //   },
 // }
 
-let arr = [];
 
 storage.create = function(schema, item) {
   debug('Created a new thing')
@@ -37,42 +32,65 @@ storage.create = function(schema, item) {
     memory[schema][item._id] = item
     return resolve(memory[schema][item._id])
   })
-
-  memory[item] = schema 
-
 }
 
-// storage.fetchOne = function(item) {
+storage.fetchOne = function(schema, itemId) {
 
-// console.log(memory)
-
-// }
-
-storage.fetchOne = function(item) {
-// console.log(item)
-  console.log(memory[`${item}`])
-
-
-
-  return memory[`${item}`]
-
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('400, Cannot find record. Schema required.'))
+    if(!itemId) return reject(new Error('400, cannot find record. item id required'))
+    if(!memory[schema][itemId]) return reject(new Error('404, cannot find record. does not exist.'))
   
-  }
-
-
-
-storage.fetchAll = function() {
-
-}
-
-storage.update = function(item,note) {
-memory[`${note}`] = item;
-console.log(memory)
-}
-
-storage.delete = function(note) {
-delete memory[`${note}`];
-console.log(memory)
+    return resolve(memory[schema][itemId])
+  })
 }
 
 
+
+storage.fetchAll = function(schema) {
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('400, cannot find record. schema required.'))
+    if(!memory[schema]) return reject(new Error('404 cannot complete request. no records match schema.'))
+    
+    let ids = Object.keys(memory[schema])
+
+    return resolve(ids)
+    
+  
+  })
+
+}
+
+storage.update = function(schema, itemId, note) {
+
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('400, cannot find record. schema required.'))
+    if(!itemId) return reject(new Error('400, cannot find record. itemId required.'))
+    if(!note) return reject(new Error('400, cannot find record. note required.'))
+    if(!memory[schema]) return reject(new Error('404 cannot complete request. no records match schema.'))
+  
+  note._id = itemId 
+  memory[schema][itemId] = note
+  console.log(memory)
+
+        return resolve(memory)
+    
+  })
+
+}
+
+storage.delete = function(schema, itemId) {
+
+console.log('you got here')
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('400, cannot find record. schema required.'))
+    if(!itemId) return reject(new Error('400, cannot find record. itemId required.'))
+    if(!memory[schema]) return reject(new Error('404 cannot complete request. no records match schema.'))
+  
+    delete memory[schema][itemId];
+    return resolve(memory)
+    
+  })
+
+
+}
