@@ -2,6 +2,9 @@
 
 const debug = require('debug')('http:storage');
 const storage = module.exports = {};
+
+
+fs.readFile(path, callback);
 const memory = {};
 
 // memory = {
@@ -21,23 +24,34 @@ storage.create = function(schema, item) {
   debug('Created a new thing');
 
   return new Promise((resolve, reject) => {
-    if(!schema || !item) return reject(new Error('Cannot create a new item; Schema and Item required'));
+    if(!schema || !item) return reject(new Error('Cannot create a new item; schema and Item required'));
 
     if(!memory[schema]) memory[schema] = {};
 
-    memory[schema][item._id] = item; 
+    memory[schema][item._id] = item;
     return resolve(item);
   });
 };
 
+storage.fetchOne = function(schema, itemId) {
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('400, Cannot find record. Schema required.'));
+    if(!itemId) return reject(new Error('400, Cannot find record. Item ID required.'));
+    if(!memory[schema][itemId]) return reject(new Error('404, Cannot find record. Does not exist.'));
+
+    return resolve(memory[schema][itemId]);
+  });
+};
 
 storage.fetchAll = function(schema) {
   debug('getting all the things!');
 
   return new Promise((resolve, reject) => {
-    if(!schema) return reject(new Error('Cannot get any items from the memory')); 
+    if(!schema) return reject(new Error('400,Cannot get any items from the memory, Schema required.')); 
+    if(!memory[schema]) return reject(new Error('404,Cannot complete request. no record match schema')); 
 
-    return resolve(memory[schema]);
+    let ids = Object.keys(memory[schema]);
+    return resolve(ids);
   });
 };
 
@@ -51,13 +65,12 @@ storage.update = function(schema, item) {
   });
 };
 
-storage.delete = function(schema, item) { 
+storage.delete = function(schema, itemId) {
   debug('Deleting a thing');
-  debug('this is the id',item.body.id);
   return new Promise((resolve, reject) => {
     debug('test', memory[schema]);
-    if(!schema || !item) return reject(new Error('Cannot delete item, item not found'))
-    delete memory[schema][item.body.id];
-    return resolve(memory[schema]);
+    if(!schema || !itemId) return reject(new Error('Cannot delete item, item not found')); 
+    delete memory[schema][itemId];
+    return resolve();
   });
 };
