@@ -1,0 +1,32 @@
+{
+  "name": "lab-richard",
+  "version": "1.0.0",
+  "description": "08-REST-HTTP",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest --verbose",
+    "lint": "eslint .",
+    "start:watch": "nodemon index.js",
+    "start:debug": "DEBUG-http* nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "montgomeryrd"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^4.16.0",
+    "eslint-plugin-react": "^7.6.0",
+    "jest": "^22.1.4",
+    "debug": "^3.1.0",
+    "dotenv": "^4.0.0"
+  },
+  "dependencies": {
+    "superagent": "^3.8.2",
+    "uuid": "^3.2.1"
+  }
+}
