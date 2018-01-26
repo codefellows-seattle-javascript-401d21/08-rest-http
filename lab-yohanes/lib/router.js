@@ -1,62 +1,67 @@
-import { endianness } from 'os';
-
 'use strict';
 
-const debug = require('debug')('http:Router')
-const bodyParser = require('./body-parser')
-const urlParser = require('./url-parser')
+const debug = require('debug')('http:Router');
+const bodyParser = require('./body-parser');
+const urlParser = require('./url-parser');
 
 const Router = module.exports = function () {
   this.routes = {
     GET: {},
     POST: {},
     PUT: {},
-    DELETE: {}
-  }
-}
+    DELETE: {},
+  };
+};
 
 Router.prototype.get = function (endpoint, callback) {
-  this.routes.GET[enpoint] = callback //square brackets means @ so in this case it when this rotes get @ endpoint, we'll callback
+  this.routes.GET[endpoint] = callback;
+};
 
-}
-
-Router.prototype.post = function(ednpoint, callback) {
-  this.routes.POST[endpoint] = callback
-}
+Router.prototype.post = function (endpoint, callback) {
+  console.log(this.routes.POST[endpoint], 'wtf');
+  this.routes.POST[endpoint] = callback;
+};
 
 Router.prototype.put = function (endpoint, callback) {
-  this.routes.PUT[endpoint] = callback
-}
+  this.routes.PUT[endpoint] = callback;
+};
 
 Router.prototype.delete = function (endpoint, callback) {
-  this.routes.DELETE[endpoint] = callback
-}
+  this.routes.DELETE[endpoint] = callback;
+};
 
 Router.prototype.route = function () {
   return (req, res) => {
-    Promise.all([ //commit to promises at url/body parser requests
+    Promise.all([
       urlParser(req),
       bodyParser(req),
     ])
-    .then(() => {
-      debug('Successfully parsed the Body and URL')
+      .then(() => {
+        debug('Successfully parsed the Body and URL');
+        // console.log(this.routes.POST, req.url);
+        // console.log(this.routes[req.method][req.url.pathname], 'got here');
 
-      if(typeof this.routes[req.method][req.url.pathname] === 'function') {
-        this.routes[req.mehtod][req.url.pathname](req, res)
-        return
-      }
+        console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', this.routes[req.method]);
+        if (typeof this.routes[req.method][req.url.pathname] === 'function') {
+          console.log('>>>>>>>>>>>>>>>: before routes', req.method);
 
-      res.writeHead(404, {'Content-Type': 'text/plain'})
-      res.write('Not Found')
-      res.end()
-      return
-    })
-    .catch(error => {
-      debug( `There was an error parsing the URL or Body: ${error}`)
+          this.routes[req.method][req.url.pathname](req, res);
 
-      res.write(400, {'Content-Type': 'text/plain'})
-      res.end()
-      return
-    })
-  }
-}
+          return;
+        }
+
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.write('Not Found post');
+        res.end();
+        return;
+      })
+      .catch(err => {
+        debug(`There was an error parsing the URL or Body: ${err}`);
+
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.write('Bad Request');
+        res.end();
+        return;
+      });
+  };
+};

@@ -1,0 +1,24 @@
+{
+  "name": "lab-yohanes",
+  "version": "1.0.0",
+  "description": "rebuilding express",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "looking",
+    "under",
+    "the",
+    "hood"
+  ],
+  "author": "Yohanes the Dev Don... in the making",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^22.1.4",
+    "superagent": "^3.8.2"
+  }
+}
