@@ -30,8 +30,9 @@ module.exports = function(router){
       .then(storageNote => {
         let resStatus = 200;
         let resMesg = JSON.stringify(storageNote);
-        if (!Object.keys(storageNote).length) [resStatus, resMesg] = [400, 'Bad Request'];
-        res.writeHead(resStatus, {'content-Type': 'text/plain'});
+        let contentType = 'application/json';
+        if (!Object.keys(storageNote).length) [resStatus, contentType, resMesg] = [400, 'text/plain', 'Bad Request'];
+        res.writeHead(resStatus, {'content-Type': contentType});
         res.write(resMesg);
         res.end();
       })
