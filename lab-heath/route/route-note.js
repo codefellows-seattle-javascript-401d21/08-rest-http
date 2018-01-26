@@ -92,7 +92,7 @@ module.exports = function(router) {
 
   router.delete('/api/v1/note', (req, res) => {
     debug('DELETE /api/v1/note');
-    
+    debug('this is a test of stuff',req.url);
     storage.delete('Note', req.url.query.id)
       .then(item => {
         res.writeHead(204, {'Content-Type': 'application/json'});

@@ -2,9 +2,6 @@
 
 const debug = require('debug')('http:storage');
 const storage = module.exports = {};
-
-
-fs.readFile(path, callback);
 const memory = {};
 
 // memory = {
@@ -19,6 +16,7 @@ const memory = {};
 //     ...
 //   },
 // }
+// /Users/heathsmith/codefellows/401/401-lab/08-rest-http/lab-heath/data/1234.json
 
 storage.create = function(schema, item) {
   debug('Created a new thing');
@@ -66,6 +64,7 @@ storage.update = function(schema, item) {
 };
 
 storage.delete = function(schema, itemId) {
+  console.log('inside the stroage', itemId);
   debug('Deleting a thing');
   return new Promise((resolve, reject) => {
     debug('test', memory[schema]);
