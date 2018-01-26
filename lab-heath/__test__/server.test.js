@@ -82,17 +82,31 @@ describe('Server Module', function() {
   //DELETE
   describe('DELETE', () => {
     it('should return a status 400 with invalid input', () => {
-      return superagent.delete(':4000/api/v1/note')
+      return superagent.delete(':4000/api/v1/note?_id=')
         .catch(err => {
+          expect(err.response.res.statusMessage).toBe('Bad Request');
           expect(err.status).toBe(400);
         });
     });
-    it('should respond with a status 204 with valid input', () => {
-      return superagent.delete(':4000/api/v1/note')
+    
+    let resPost, delStat;
+    
+    beforeAll(() => {
+      return superagent.post(':4000/api/v1/note')
         .send({text: 'test', content: 'pizza'})
         .then(res => {
-          expect(res.status).toBe(204);
+          resPost = res;
         });
+    });
+    beforeAll(() => {
+      return superagent.delete(`:4000/api/v1/note?id=${resPost._id}`)
+        .then(res => {
+          delStat = res.status;
+        });
+    });
+    it('should respond with a status 204 with valid input', () => {
+      expect(delStat).toBe(204);
     });
   });
 });
+

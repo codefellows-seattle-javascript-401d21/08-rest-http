@@ -32,7 +32,7 @@ these are you basic commands
 
 to add note to it.
 ```javascript
-http POST http://localhost:3000/api/v1/note title={your title} content=[what you want]
+http POST http://localhost:3000/api/v1/note title=bigboy content=stuff
 ```
 
 this should return this 
@@ -41,7 +41,7 @@ this should return this
 {
     "_id": "75dce3d4-1304-4f29-b519-6d45f3b681cb",
     "content": "stuff",
-    "title": "heath"
+    "title": "bigboy"
 }
 ```
 
@@ -54,34 +54,37 @@ it will get all the notes that in memory and it should look like this.
 
 ```javascript
 {
-    "75dce3d4-1304-4f29-b519-6d45f3b681cb": {
-        "_id": "75dce3d4-1304-4f29-b519-6d45f3b681cb",
-        "content": "stuff",
-        "title": "heath"
-    }
+    "_id": "75dce3d4-1304-4f29-b519-6d45f3b681cb",
+    "content": "stuff",
+    "title": "bigboy"
 }
 ```
+
+to get all to get just one of your notes.
+```javascript
+http GET http://localhost:3000/api/v1/note\?_id\=b5555ffd-8761-4fc9-adb5-20ab38e886e5
+```
+it will get all the notes that in memory and it should look like this.
+
+```javascript
+{"title":"bigboy","content":"stuff","_id":"daf2e898-a683-4219-bbd2-3723b1252103"}
+```
+
 
 to update a note.
 ```javascript
-http PUT http://localhost:3000/api/v1/note title=heath content=thisisatestoftheupdate id=eb96fe8d-106d-4d2e-ae04-4696116e7d15
+http PUT http://localhost:3000/api/v1/note title=littleBoy content=thisisatestoftheupdate id=daf2e898-a683-4219-bbd2-3723b1252103
 ```
 
-now your note should look like this
+now your run a `get one note` and it should look like this
 
 ```javascript
-{
-    "75dce3d4-1304-4f29-b519-6d45f3b681cb": {
-        "_id": "75dce3d4-1304-4f29-b519-6d45f3b681cb",
-        "content": "wasrunning",
-        "title": "cat"
-    }
-}
+{"title":"littleBoy","content":"stuff","_id":"daf2e898-a683-4219-bbd2-3723b1252103"}
 ```
 
 to delete a note.
 ```javascript
-http DELETE http://localhost:3000/api/v1/note id=cdb0a4b1-bb1a-4150-beb1-7cc8f1c7a9ba
+http DELETE http://localhost:3000/api/v1/note\?id=dd9762d2-679a-4d8c-a5ab-17c446dc4300
 ```  
 and now you should have nothing is you do the GET command again.
 
