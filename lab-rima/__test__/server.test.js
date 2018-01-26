@@ -59,24 +59,21 @@ describe('Server module', () => {
 
   describe('GET /', () => {
 
-    let resPost1, resPost2;
-
-    beforeAll(() => {
-      superagent.post(':8888/api/v1/note').send({title: 'post 2', content: 'post 2 content'}).then(res => {resPost1 = res});
-      superagent.post(':8888/api/v1/note').send({title: 'post 3', content: 'post 3 content'}).then(res => {resPost2 = res});
-    });
+    var resPost1, resPost2;
 
     test(
       'valid: should respond with a status 200 (fetch all)',
       () => {
+        superagent.post(':8888/api/v1/note').send({title: 'post 2', content: 'post 2 content'}).then(res => {resPost1 = res});
+        superagent.post(':8888/api/v1/note').send({title: 'post 3', content: 'post 3 content'}).then(res => {resPost2 = res});
         return superagent.get(':8888/api/v1/note')
           .then(res => {
             expect(res.status).toBe(200);
             let notes = Object.values(res.body);
-            expect(notes[1].title).toEqual('post 2');
-            expect(notes[1].content).toEqual('post 2 content');
-            expect(notes[2].title).toEqual('post 3');
-            expect(notes[2].content).toEqual('post 3 content');
+            expect(notes[0].title).toEqual('post 2');
+            expect(notes[0].content).toEqual('post 2 content');
+            expect(notes[1].title).toEqual('post 3');
+            expect(notes[1].content).toEqual('post 3 content');
         });
     });
 
@@ -119,16 +116,16 @@ describe('Server module', () => {
     test(
       'valid: should respond with a status 204',
       () => {
-        let resPost3;
+        var testID;
         return superagent.post(':8888/api/v1/note')
         .send({title: 'post 4', content: 'post 4 content'})
-        .then(res => {resPost3 = res})
-        .then(() => {
+        .then(res => {
+          testID = res._id;
           superagent.put(':8888/api/v1/note')
-          .send({_id: resPost3.body._id, title: 'post 4'})
+          .send({_id: res.body._id, title: 'post 4'})
           .then(res => {
-            expect(res.status).toBe(202);
-            superagent.get(`:8888/api/v1/note?_id=${resPost3._id}`)
+            expect(res.status).toBe(204);
+            superagent.get(`:8888/api/v1/note?_id=${testID}`)
             .then(res => {
               expect(res.body.title).toEqual('post 4');
               expect(res.body.content).toEqual('post 4 content');
@@ -139,7 +136,7 @@ describe('Server module', () => {
 
 
     test(
-      'invalid: should respond with a status 400',
+      'invalid: should respond with a status 400 with bad object',
       () => {
         return superagent.put(':8888/api/v1/note')
           .send({_id: 9})
@@ -149,15 +146,6 @@ describe('Server module', () => {
         });
      });
 
-    test(
-      'invalid: should respond with a status 400',
-      () => {
-        return superagent.put(':8888/api/v1/')
-          .catch(err => {
-            expect(err.status).toBe(400);
-            expect(err.response.text).toEqual('Bad Request');
-        });
-    });
   });
 
   describe('DELETE /', () => {
@@ -165,16 +153,16 @@ describe('Server module', () => {
     test(
       'valid: should respond with a status 200 (delete one note)',
       () => {
-        let resPost4;
+        var testID2;
         return superagent.post(':8888/api/v1/note')
         .send({title: 'post 5', content: 'post 5 content'})
-        .then(res => {resPost4 = res})
-        .then(() => {
+        .then(res => {
+          testID2 = res._id;
           superagent.delete(':8888/api/v1/note')
-          .send({_id: resPost4.body._id})
+          .send({_id: res._id})
           .then(res => {
-            expect(res.status).toBe(200);
-            superagent.get(`:8888/api/v1/note?_id=${resPost3._id}`)
+            expect(res.status).toBe(204);
+            superagent.get(`:8888/api/v1/note?_id=${testID2}`)
             .catch(err => {
               expect(err.status).toEqual(400);
               expect(err.response.text).toEqual('Bad Request');
@@ -189,11 +177,11 @@ describe('Server module', () => {
       () => {
         return superagent.delete(':8888/api/v1/note')
         .then(res => {
-          expect(res.status).toBe(200);
+          expect(res.status).toBe(204);
           superagent.get(':8888/api/v1/note')
           .then(res => {
             expect(res.status).toEqual(200);
-            expect(res.response.text).toEqual({});
+            expect(res.body).toEqual({});
           });
        });
     });

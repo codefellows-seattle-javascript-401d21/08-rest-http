@@ -60,7 +60,7 @@ module.exports = (router) => {
     if(req.body){
       storage.update('Note', req.body)
         .then(storageNote => {
-          res.writeHead(202, {'Content-Type': 'application/json'});
+          res.writeHead(204, {'Content-Type': 'application/json'});
           res.write(JSON.stringify(storageNote));
           res.end();
         })
@@ -80,8 +80,7 @@ module.exports = (router) => {
     if(req.url.query._id){
       storage.delete('Note', req.url.query._id)
         .then(storageNote => {
-          res.writeHead(204, {'Content-Type': 'application/json'});
-          res.write('The note was deleted.');
+          res.writeHead(204, {'Content-Type': 'text/plain'});
           res.end();
         })
         .catch(err => {
@@ -92,8 +91,7 @@ module.exports = (router) => {
     } else {
       storage.deleteAll('Note')
         .then(storageNote => {
-          res.writeHead(200, {'Content-Type': 'application/json'});
-          res.write('All notes are deleted.');
+          res.writeHead(204, {'Content-Type': 'text/plain'});
           res.end();
         })
     }
