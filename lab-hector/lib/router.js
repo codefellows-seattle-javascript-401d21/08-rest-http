@@ -6,29 +6,19 @@ const urlParser = require('./url-parser');
 
 const Router = module.exports = function () {
   this.routes = {
-    GET: {
-      // Just a hard-coded example
-      // '/api/v1/note': (req, res) => {},
-      // '/api/v1/note/:id': (req, res) => {},
-    },
+    GET: {},
     POST: {},
     PUT: {},
     DELETE: {},
   };
 };
 
-// ['get', 'post', 'put', 'delete'].map(method => {
-//   Router.prototype[method] = function(endpoint, callback) {
-//     this.routes[method.toUpperCase()][endpoint] = callback
-//   }
-// })
-
 Router.prototype.get = function (endpoint, callback) {
-  // debug(`Router: GET ${endpoint} mounted`)
   this.routes.GET[endpoint] = callback;
 };
 
 Router.prototype.post = function (endpoint, callback) {
+  console.log(this.routes.POST[endpoint], 'wtf');
   this.routes.POST[endpoint] = callback;
 };
 
@@ -48,14 +38,19 @@ Router.prototype.route = function () {
     ])
       .then(() => {
         debug('Successfully parsed the Body and URL');
+        // console.log(this.routes.POST, req.url);
+        // console.log(this.routes[req.method][req.url.pathname], 'got here');
 
+      
         if (typeof this.routes[req.method][req.url.pathname] === 'function') {
+
           this.routes[req.method][req.url.pathname](req, res);
+
           return;
         }
 
         res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.write('Not Found');
+        res.write('Not Found post');
         res.end();
         return;
       })
