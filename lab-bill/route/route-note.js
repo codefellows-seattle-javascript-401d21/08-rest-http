@@ -91,7 +91,6 @@ module.exports = function(router) {
       })
       .catch(err => {
         debug(`There was a bad request: ${err}`);
-        console.log('inside catch');
         res.writeHead(400, {'Content-Type': 'text/plain'});
         res.write('Bad Request');
         res.end();
