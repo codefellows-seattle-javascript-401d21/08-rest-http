@@ -4,7 +4,7 @@ const debug = require('debug')('http:body-parser');
 module.exports = function(request) {
   return new Promise((resolve, reject) => {
     debug('#bodyParser');
-    if(request.method !== 'POST' && request.method !== 'PUT' && request.method !== 'DELETE') return resolve(request);
+    if(request.method !== 'POST' && request.method !== 'PUT') return resolve(request);
 
     let message = '';
 

@@ -7,5 +7,5 @@ module.exports = function(title, content) {
   this.title = title;
   this.content = content;
   this._id = uuid();
-  debug(`Cretae a new note ${this}`);
+  debug(`Created a new note ${this}`);
 };

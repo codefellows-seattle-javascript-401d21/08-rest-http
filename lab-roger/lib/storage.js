@@ -18,9 +18,13 @@ storage.fetchAll = function(schema) {
   debug('in the fetch module', memory);
   return new Promise((resolve, reject) => {
     if(!schema) {
-      return reject(new Error('No such catagory'));
+      return reject(new Error('You need to provide a catagory'));
     }
-    return resolve(memory[schema]);
+    if(!memory[schema]) {
+      return reject(new Error('No category found'));
+    }
+    let idsArray = Object.keys(memory[schema]);
+    return resolve(idsArray);
   });
 
 };
@@ -29,7 +33,7 @@ storage.update = function(schema, newNote) {
   debug('in the update module', memory);
   return new Promise((resolve, reject) => {
     if(!schema || !newNote) {
-      return reject(new Error('no item found to delete'));
+      return reject(new Error('no item found to update'));
     }
     memory[schema][newNote.id] = newNote;
     return resolve(memory[schema]);
@@ -56,6 +60,9 @@ storage.fetchOne = function(schema, id) {
   return new Promise((resolve, reject) => {
     if(!memory[schema]) {
       return reject(new Error('no item found'));
+    }
+    if(!memory[schema][id]) {
+      return reject(new Error('This item not found'));
     }
     //let objtosend = memory[schema][id];
     return resolve(memory[schema][id]);
