@@ -45,7 +45,6 @@ Router.prototype.route = function(){
 
         if(typeof this.routes[req.method][req.url.pathname] === 'function'){
 
-
           this.routes[req.method][req.url.pathname](req, res);
           return;
         }
@@ -56,8 +55,6 @@ Router.prototype.route = function(){
         return;
       })
       .catch(err => {
-
-
         res.writeHead(400, {'Content-Type': 'text/plain'});
         res.write('Bad Request');
         res.end();

@@ -5,6 +5,11 @@ const debug = require('debug')('http:note-constructor');
 
 
 module.exports = function(title, content){
+
+  if(!title || !content){
+    throw new Error('Cannot post: Title and content required.');
+  }
+
   this.title = title;
   this.content = content;
   this._id = uuid();

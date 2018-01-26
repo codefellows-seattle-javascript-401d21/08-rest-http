@@ -3,8 +3,8 @@
 const debug = require('debug')('http:storage');
 
 const storage = module.exports = {};
-//const memory = {};
-const memory = {
+const memory = {};
+/*const memory = {
    'Note': {
      '1': {
        '_id': '1',
@@ -22,7 +22,7 @@ const memory = {
        'content': 'threethreethree',
      },
    },
-}
+}*/
 
 
 storage.create = (schema, item) => {
@@ -50,14 +50,14 @@ storage.fetchOne = (schema, _id) => {
   debug('Fetched a thing');
 
   return new Promise((resolve, reject) => {
-
-    if(!_id){
-      return reject(new Error('Cannot fetch the item; ID required.'));
+    if(!schema || !_id){
+      return reject(new Error('Cannot fetch the item; Schema and ID required.'));
     }
 
     if(memory[schema][_id]){
       return resolve(memory[schema][_id]);
     }
+
 
     return reject(new Error('Requested ID does not exist.'));
   });
@@ -73,6 +73,10 @@ storage.fetchAll = (schema) => {
       return reject(new Error('Cannot fetch all; Schema required'));
     }
 
+    if(!memory[schema]){
+      return reject(new Error('No data'));
+    }
+
     return resolve(memory[schema]);
 
   });
@@ -82,24 +86,27 @@ storage.update = (schema, item) => {
 
 
   return new Promise((resolve, reject) => {
+    try{
+      if(!schema || !item){
+        return reject(new Error('Cannot update the item; Schema and Item required'));
+      }
 
-    if(!schema || !item){
-      return reject(new Error('Cannot update the item; Schema and Item required'));
+      if(!memory[schema][item._id]){
+        return reject(new Error('Cannot find the item'));
+      }
+
+      memory[schema][item._id] = item;
+      return resolve(memory[schema][item._id]);
+    } catch(err) {
+      return reject(err);
     }
-
-    if(!memory[schema][item._id]){
-      return reject(new Error('Cannot find the item'));
-    }
-
-    memory[schema][item._id] = item;
-    return resolve(memory[schema][item._id]);
 
   });
 };
 
 storage.delete = (schema, _id) => {
 
-  debug('Updated the thing');
+  debug('Delete one');
 
   return new Promise((resolve, reject) => {
 
@@ -112,6 +119,26 @@ storage.delete = (schema, _id) => {
     }
      
     delete memory[schema][_id];
+    return resolve({});
+
+  });
+};
+
+storage.deleteAll = (schema) => {
+
+  debug('Delete all');
+
+  return new Promise((resolve, reject) => {
+
+    if(!schema){
+      return reject(new Error('Cannot delete the items; Schema required'));
+    }
+
+    if(!memory[schema]){
+      return reject(new Error('Cannot find the data'));
+    }
+    
+    memory[schema] = {};
     return resolve({});
 
   });

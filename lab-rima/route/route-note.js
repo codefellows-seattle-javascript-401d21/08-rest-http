@@ -7,63 +7,69 @@ const debug = require('debug')('http:route-note');
 
 module.exports = (router) => {
 
+  router.get('/api/v1/note', (req, res) => {
+    // if id is passed
+    if(req.url.query._id){
+      storage.fetchOne('Note', req.url.query._id)
+        .then(storageNote => {
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          res.write(JSON.stringify(storageNote));
+          res.end();
+          return;})
+        .catch(err => {
+          res.writeHead(400, {'Content-Type': 'text/plain'});
+          res.write('Bad Request');
+          res.end();
+          return;})
+    } else {
+      storage.fetchAll('Note')
+        .then(storageNote => {
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          res.write(JSON.stringify(storageNote));
+          res.end();
+          return;})
+        .catch(err => {
+          res.writeHead(400, {'Content-Type': 'text/plain'});
+          res.write('Bad Request');
+          res.end();
+          return;})
+    }
+  });
+
 
   router.post('/api/v1/note', (req, res) => {
-
-
-    try{
-      
+    try{ 
       let newNote = new Note(req.body.title, req.body.content);
-
       storage.create('Note', newNote)
         .then(storageNote => { 
           res.writeHead(201, {'Content-Type': 'application/json'});
           res.write(JSON.stringify(storageNote));
-          res.end();
-        });
-    } catch(err) {
-
-      res.writeHead(400, {'Content-Type': 'text/plain'});
-      res.write('Bad Request');
-      res.end();
-    }
-  });  
-
-  router.get('/api/v1/note', (req, res) => {
-    try{
-      if(req.url.query._id){
-        storage.fetchOne('Note', req.url.query._id)
-          .then(storageNote => {
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.write(JSON.stringify(storageNote));
-            res.end();
-          });
-      } else {
-        storage.fetchAll('Note')
-          .then(storageNote => {
-            res.writeHead(200, {'Content-Type': 'application/json'});
-            res.write(JSON.stringify(storageNote));
-            res.end();
-          });
-      }
+          res.end();})
+        .catch(err => {
+          res.writeHead(400, {'Content-Type': 'text/plain'});
+          res.write('Bad Request');
+          res.end();})
     } catch(err) {
       res.writeHead(400, {'Content-Type': 'text/plain'});
-      res.write('Bad Request');
+      res.write(err.message);
       res.end();
     }
   });
 
   router.put('/api/v1/note', (req, res) => {
-
-    try{
-
+    if(req.body){
       storage.update('Note', req.body)
         .then(storageNote => {
-          res.writeHead(204, {'Content-Type': 'application/json'});
+          res.writeHead(202, {'Content-Type': 'application/json'});
           res.write(JSON.stringify(storageNote));
           res.end();
-        });
-    } catch(err) {
+        })
+        .catch(err => {
+          res.writeHead(400, {'Content-Type': 'text/plain'});
+          res.write('Bad Request');
+          res.end();
+        })
+    } else{
       res.writeHead(400, {'Content-Type': 'text/plain'});
       res.write('Bad Request');
       res.end();
@@ -71,19 +77,25 @@ module.exports = (router) => {
   });
 
   router.delete('/api/v1/note', (req, res) => {
-
-    try{
-
+    if(req.url.query._id){
       storage.delete('Note', req.url.query._id)
         .then(storageNote => {
           res.writeHead(204, {'Content-Type': 'application/json'});
           res.write('The note was deleted.');
           res.end();
-        });
-    } catch(err) {
-      res.writeHead(400, {'Content-Type': 'text/plain'});
-      res.write('Bad Request');
-      res.end();
+        })
+        .catch(err => {
+          res.writeHead(400, {'Content-Type': 'text/plain'});
+          res.write('Bad Request');
+          res.end();
+        })
+    } else {
+      storage.deleteAll('Note')
+        .then(storageNote => {
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          res.write('All notes are deleted.');
+          res.end();
+        })
     }
   });
-};
+}
