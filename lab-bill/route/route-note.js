@@ -11,11 +11,9 @@ module.exports = function(router) {
     try {
       
       let newNote = new Note (req.body.title, req.body.content);
-      // console.log(newNote);
 
       storage.create('Note', newNote)
         .then(storedNote => {
-          // console.log('inside .then strorage.create', storedNote);
           res.writeHead(201, {'Content-Type': 'application/json'});
           res.write(JSON.stringify(storedNote));
           res.end();
@@ -86,24 +84,18 @@ module.exports = function(router) {
 
   router.delete('/api/v1/note', (req, res) => {
     debug('delete /api/v1/note');
-    console.log(req);
-    console.log(req.url.query);
-    try {
-      console.log('inside delete',req.url.query._id);
-      // let newNote = new Note(req.body.title, req.body.content);
-      // newNote._id = req.body.id;
-      storage.delete('Note', req.url.query._id)
-        .then(item => {
-          res.writeHead(204, {'Content-Type': 'text/plain'});
-          res.end();
-        });
-    } catch(err) {
-      debug(`There was a bad request: ${err}`);
-
-      res.writeHead(400, {'Content-Type': 'text/plain'});
-      res.write('Bad Request');
-      res.end();
-    }
+    storage.delete('Note', req.url.query.id)
+      .then(item => {
+        res.writeHead(204, {'Content-Type': 'text/plain'});
+        res.end();
+      })
+      .catch(err => {
+        debug(`There was a bad request: ${err}`);
+        console.log('inside catch');
+        res.writeHead(400, {'Content-Type': 'text/plain'});
+        res.write('Bad Request');
+        res.end();
+      });
   });
 
 };

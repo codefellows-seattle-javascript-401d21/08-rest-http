@@ -7,7 +7,6 @@ const memory = {};
 
 storage.create = function(schema, item) {
   debug('Created a new thing');
-  // console.log(schema,item);
   return new Promise((resolve, reject) => {
     if(!schema || !item) return reject(new Error('Cannot create a new item, schme and item required'));
 
@@ -51,10 +50,8 @@ storage.update = function(schema, item, itemId) {
 storage.delete = function(schema, id) {
   debug('deleting the item');
   return new Promise((resolve, reject) => {
-    console.log('hello');
-    console.log('id',id);
     if(!id) return reject(new Error('Cannot delete this item'));
-    console.log('memory.schema.id',memory[schema][id]);
+    if(!memory[schema][id]) return reject(new Error('This id does not exist'));
     delete memory[schema][id];
     return resolve(memory[schema]);
   });

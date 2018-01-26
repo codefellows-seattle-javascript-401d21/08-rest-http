@@ -62,7 +62,61 @@ describe('MY APPLICATION ', () => {
       });
       it('should contain the two ids of records posted', () => {
         expect(getOne.body).toContain(postOne.body._id);
-        expect(getTwo.body).toContain(postTwo.body._id);
+        expect(getOne.body).toContain(postTwo.body._id);
+      });
+    });
+    describe('PUT /api/v1/note', () => {
+      let resPost, resPut;
+      beforeAll(() => {
+        return superagent.post(':3000/api/v1/note')
+          .send({title: 'hello', content: 'watman'})
+          .then(res => {
+            resPost = res;
+          });
+      });
+      beforeAll(() => {
+        return superagent.put(':3000/api/v1/note')
+          .send({title: 'bulldog', content: 'kappa'})
+          .then(res => {
+            resPut = res;
+          });
+      });
+      it('should update an existing record', () => {
+        expect(resPut.body.title).toEqual('bulldog');
+        expect(resPut.body.content).toEqual('kappa');
+      });
+      it('should return 202 status code', () => {
+        expect(resPut.status).toBe(202);
+      });
+    });
+    describe('DELETE /api/v1/note', () => {
+      let resPost, id, resDelete;
+      beforeAll(() => {
+        return superagent.post(':3000/api/v1/note')
+          .send({title: 'hello', content: 'watman'})
+          .then(res => {
+            id = res.body._id; 
+            resPost = res;
+            console.log(resPost.title);
+          });
+      });
+      beforeAll(() => {
+        return superagent.delete(`:3000/api/v1/note?id=${id}`)
+          .then(res => {
+            resDelete = res;
+          }).catch(err => {
+            console.log(err);
+          });
+      });
+      it('should return 204 status code', () => {
+        expect(resDelete.status).toBe(204);
+      });
+      it('should return ', () => {
+        return superagent.get(':3000/api/v1/note')
+          .then(res => {
+            console.log(res.body);
+            expect(res.body.length).toBe(5);
+          });
       });
     });
   });
@@ -80,6 +134,50 @@ describe('MY APPLICATION ', () => {
           .send()
           .catch(err => {
             expect(err.status).toBe(400);
+          });
+      });
+    });
+    describe('GET /api/v1/note', () => {
+      it('should return a 404 given an incorrect path', () => {
+        return superagent.get(':3000/api/v1/doesnotexist')
+          .catch(err => {
+            expect(err.status).toBe(404);
+          });
+      });
+    });
+    describe('PUT /api/v1/note', () => {
+      it('should return a 404 given an incorrect path', () => {
+        return superagent.put(':3000/api/v1/doesnotexist')
+          .send({title: '', content:''})
+          .catch(err => {
+            expect(err.status).toBe(404);
+          });
+      });
+      it('should return a 400 given no body', () => {
+        return superagent.put(':3000/api/v1/doesnotexist')
+          .send()
+          .catch(err => {
+            expect(err.status).toBe(400);
+          });
+      });
+    });
+    describe('DELETE /api/v1/note', () => {
+      it('should return a 400 if the path doesnt exist', () => {
+        return superagent.delete(':3000/api/v1/note?id=blblblb')
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            expect(err.status).toBe(400);
+          });
+      });
+      it('should return a 404 if the path is invalid', () => {
+        return superagent.delete(':3000/api/v1/doesnotexist')
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            expect(err.status).toBe(404);
           });
       });
     });
