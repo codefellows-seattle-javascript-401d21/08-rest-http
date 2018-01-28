@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "jest",
-    "lint": "eslint",
+    "test:debug": "DEBUG=http* jest --verbose i",
+    "lint": "eslint .",
     "start:watch": "nodemon index.js",
     "start:debug": "DEBUG=http* nodemon index.js"
   },

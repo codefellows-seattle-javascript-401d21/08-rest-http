@@ -12,7 +12,7 @@ module.exports = function(router){
     let note = new Note(req.body.subject, req.body.comment);
     storage.create('note', note)
       .then(storageNote => {
-        res.writeHead(201, {'content-Type': 'text/plain'});
+        res.writeHead(201, {'content-Type': 'application/json'});
         res.write(JSON.stringify(storageNote));
         res.end();
       })
@@ -30,8 +30,9 @@ module.exports = function(router){
       .then(storageNote => {
         let resStatus = 200;
         let resMesg = JSON.stringify(storageNote);
-        if (!Object.keys(storageNote).length) [resStatus, resMesg] = [400, 'Bad Request'];
-        res.writeHead(resStatus, {'content-Type': 'text/plain'});
+        let contentType = 'application/json';
+        if (!Object.keys(storageNote).length) [resStatus, contentType, resMesg] = [400, 'text/plain', 'Bad Request'];
+        res.writeHead(resStatus, {'content-Type': contentType});
         res.write(resMesg);
         res.end();
       })
@@ -44,11 +45,13 @@ module.exports = function(router){
   });
 
   router.put('/api/v1/note', (req, res) => {
+   
     let [note_id , noteBody ] = [req.url.query.id, req.body];
     noteBody.id = note_id;
     storage.update('note', note_id, noteBody)
       .then(() => {
         res.writeHead(204, {'content-Type': 'text/plain'});
+        res.write();
         res.end();
       })
       .catch(err =>{
