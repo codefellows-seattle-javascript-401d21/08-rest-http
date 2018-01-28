@@ -1,7 +1,9 @@
 # Lab 08: Vanilla REST API
 
 
-A Basic HTTP api server created using the native NodeJS http module with the implementation of a custom body-parser, ul-parser and request router to handle basic CRUD requests of GET, PUT, POST, and DELETE.  All operations are served on the same route, '/api/v1/note'.  The user can create and manage a simple note with two content fields, subject and comment, with an additional id field aded on the server side. 
+
+A Basic HTTP api server created using the native NodeJS http module with the implementation of a custom body-parser, ul-parser and request router.  The api handles basic CRUD requests of GET, PUT, POST, and DELETE.  All operations are served on the same route, '/api/v1/note'.  The user can create and manage a simple note with two content fields, subject and comment, with an additional id field aded on the server side. 
+
 
 
 >## Install
@@ -121,9 +123,75 @@ There is one route, '/api/v1/note', with fours methods:
   - Delete a note by supplying an id in the query string, '?id=<uuid>' 
 
    ```
-    DELERTE:    /api/v1/note?id=8e925154-bf12-4014-b0b3-b029ab360fcf
+    DELETE:    /api/v1/note?id=8e925154-bf12-4014-b0b3-b029ab360fcf
   ```
 
   - Returns a status code of 204 upon success
 
   - Returns a status code of 400 if the note for the id was not available.
+
+
+>## Tests
+
+  ### Valid requests
+
+  #### POST
+
+  - Test to validate the creation of new note
+
+  - Test to validate receiving a 201 status code.
+
+  - Test to validate that there is an id in the response body
+
+  #### GET
+
+  - Test to validate receiving a 200 status code.
+
+  - Test to validate the item returned with the id that was requested
+
+  - Test to validate the id was a correctly formed uuid
+
+  - Test to validate a status of 200'
+  
+  - Test to validate the return an array
+  
+  - Test to validate the return of an array of all the ids
+
+
+  #### PUT
+
+  - Test to validate a status cone of 204
+
+  - Test to validate the note now has the values from the put request
+
+  - Test to validate the note now has different values form the original post data
+
+  - Test to validate the note has the same id as the original item created by post 
+
+  #### DELETE
+
+  - Test to validate a 204 status
+
+  - Test to validate the response should not have data in the body
+  
+  - Test to validate that the note has been deleted
+
+
+### Inalid requests
+
+  #### GET
+     
+   - Validate a 404 error when sending a request to the wrong route
+    
+  #### POST
+     
+   - Validate a 404 error when sending a request to the wrong route
+  
+  #### PUT
+     
+   - Validate a 404 error when sending a request to the wrong route
+   
+   #### DELETE
+     
+   - Validate a 404 error when sending a request to the wrong route
+  
