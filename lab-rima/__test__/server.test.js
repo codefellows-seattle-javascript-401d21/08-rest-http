@@ -13,11 +13,12 @@ describe('Server Integration Testing', () => {
 
     describe('POST /api/v1/note', () => {
       let resPost;
+
       // create a new note to use it in test
       beforeAll(() => {
         return superagent.post(':8888/api/v1/note')
         .send({title: 'Test', content: 'Testing'})
-        .then(res => { resPost = res })
+        .then(res => { resPost = res; });
       });
 
       test(
@@ -42,16 +43,18 @@ describe('Server Integration Testing', () => {
 
     // get one record
     describe('GET /api/v1/note?_id=', () => {
-      let postOne, getOne;
+      var getOne;
+      const testTitle = 'Test';
+      const testContent = 'Testing';
 
       // create new note to use it in test
       beforeAll(() => {
-        superagent.post(':8888/api/v1/note')
-          .send({title: 'Test', content: 'Testing'})
-          .then(res => {postOne = res;});
-        
-        superagent.get(`:8888/api/v1/note?_id=${postOne.body._id}`)
-          .then(res => {getOne = res;});
+        return superagent.post(':8888/api/v1/note')
+          .send({title: testTitle, content: testContent})
+          .then(res => {
+            return superagent.get(`:8888/api/v1/note?_id=${res.body._id}`)
+            .then(res => {getOne = res;});
+          });
       });
 
       test(
@@ -69,8 +72,8 @@ describe('Server Integration Testing', () => {
       test(
         'should contain title and content that has been created in test',
         () => {
-          expect(getOne.body.title).toContain(postOne.body.title);
-          expect(getOne.body.content).toContain(postOne.body.content);
+          expect(getOne.body.title).toContain(testTitle);
+          expect(getOne.body.content).toContain(testContent);
       });
     });
 
@@ -95,7 +98,7 @@ describe('Server Integration Testing', () => {
         return superagent.get(':8888/api/v1/note')
           .then(res => {getAll = res;});
       });
-console.log(getAll);
+
       test(
         'should return an array of ids',
         () => {
