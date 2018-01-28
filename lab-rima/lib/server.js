@@ -7,7 +7,6 @@ const Router = require('./router');
 
 // Router setup
 const router = new Router();
-
 require('../route/route-note')(router);
 
 // Application setup

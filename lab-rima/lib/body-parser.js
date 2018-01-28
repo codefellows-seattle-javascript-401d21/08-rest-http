@@ -3,9 +3,9 @@
 const debug = require('debug')('http:body-parser');
 
 
-module.exports = (request) => {
-
-  return new Promise((resolve, reject) => {
+module.exports = function(request){
+  
+    return new Promise((resolve, reject) => {
 
     debug('#bodyParser');
 
@@ -18,7 +18,6 @@ module.exports = (request) => {
     request.on('data', data => {
       
       debug(`Chunked request data: ${data.toString()}`);
-      
       msg += data.toString();
     });
 

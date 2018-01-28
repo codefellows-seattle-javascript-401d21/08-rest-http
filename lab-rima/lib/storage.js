@@ -25,90 +25,108 @@ const memory = {};
 }*/
 
 
-storage.create = (schema, item) => {
+storage.create = function(schema, item){
 
   debug('Created a new thing');
 
   return new Promise((resolve, reject) => {
 
+    // if arguments are not passed in
     if(!schema || !item){
       return reject(new Error('Cannot create a new item; Schema and Item required'));
     }
 
+    // if passed schema doesn't exists in database(= storage)
     if(!memory[schema]){
+      // create the schema so we can save item in it
       memory[schema] = {};
     }
 
+    // save the item in database(= storage)
     memory[schema][item._id] = item;
     return resolve(memory[schema][item._id]);
-
   });
 };
 
-storage.fetchOne = (schema, _id) => {
+storage.fetchOne = function(schema, itemId){
 
   debug('Fetched a thing');
 
   return new Promise((resolve, reject) => {
-    if(!schema || !_id){
-      return reject(new Error('Cannot fetch the item; Schema and ID required.'));
+    if(!schema){
+      return reject(new Error('400, Cannot find the record.  Schema required.'));
+    }
+    if(!itemId){
+      return reject(new Error('400, Cannot find the record.  ID required.'));
+    }
+    if(!memory[schema][itemId]){
+      return reject(new Error('404, Record does not exists'));
     }
 
-    if(memory[schema][_id]){
-      return resolve(memory[schema][_id]);
-    }
-
-
-    return reject(new Error('Requested ID does not exist.'));
+    return resolve(memory[schema][itemId]);
   });
 };
 
-storage.fetchAll = (schema) => {
+storage.fetchAll = function(schema){
 
   debug('Fething all');
 
   return new Promise((resolve, reject) => {
 
     if(!schema){
-      return reject(new Error('Cannot fetch all; Schema required'));
+      return reject(new Error('400, Cannot find the record. Schema required'));
     }
 
     if(!memory[schema]){
-      return reject(new Error('No data'));
+      return reject(new Error('404, No record in schema'));
     }
 
-    return resolve(memory[schema]);
-
+    let ids = Object.keys(memory[schema]);
+    return resolve(ids);
   });
 };
 
-storage.update = (schema, item) => {
-
+storage.update = function(schema, itemId, item){
 
   return new Promise((resolve, reject) => {
-    try{
-      if(!schema || !item){
-        return reject(new Error('Cannot update the item; Schema and Item required'));
-      }
 
-      if(!memory[schema][item._id]){
-        return reject(new Error('Cannot find the item'));
-      }
-
-      memory[schema][item._id] = item;
-      return resolve(memory[schema][item._id]);
-    } catch(err) {
-      return reject(err);
+    if(!schema){
+      return reject(new Error('Cannot update. Schema required.'));
+    }
+    if(!itemId){
+      return reject(new Error('Cannot update. Item ID required.'));
+    }
+    if(!item){
+      return reject(new Error('Cannot update. Item required.'));
+    }
+    if(item._id !== itemId){
+      return reject(new Error('Cannot update. Invalid item ID'));
     }
 
+    memory[schema][itemId] = item;
+    return resolve();
   });
 };
 
-storage.delete = (schema, _id) => {
+storage.deleteOne = function(schema, itemId){
 
   debug('Delete one');
 
   return new Promise((resolve, reject) => {
+    if(!schema){
+      return reject(new Error('400, Cannot find the record.  Schema required.'));
+    }
+    if(!itemId){
+      return reject(new Error('400, Cannot find the record.  ID required.'));
+    }
+    if(!memory[schema][itemId]){
+      return reject(new Error('404, Record does not exists'));
+    }
+
+    delete memory[schema][itemId];
+    return resolve();
+  });
+/*  return new Promise((resolve, reject) => {
 
     if(!schema || !_id){
       return reject(new Error('Cannot delete the item; Schema and Item required'));
@@ -121,14 +139,27 @@ storage.delete = (schema, _id) => {
     delete memory[schema][_id];
     return resolve({});
 
-  });
+  });*/
 };
 
-storage.deleteAll = (schema) => {
+storage.deleteAll = function(schema){
 
   debug('Delete all');
 
   return new Promise((resolve, reject) => {
+
+    if(!schema){
+      return reject(new Error('400, Cannot find the record. Schema required'));
+    }
+
+    if(!memory[schema]){
+      return reject(new Error('404, No record in schema'));
+    }
+
+    memory[schema] = {};
+    return resolve();
+  });
+/*  return new Promise((resolve, reject) => {
 
     if(!schema){
       return reject(new Error('Cannot delete the items; Schema required'));
@@ -141,5 +172,5 @@ storage.deleteAll = (schema) => {
     memory[schema] = {};
     return resolve({});
 
-  });
+  });*/
 };

@@ -6,8 +6,11 @@ const debug = require('debug')('http:note-constructor');
 
 module.exports = function(title, content){
 
-  if(!title || !content){
-    throw new Error('Cannot post: Title and content required.');
+  if(!title){
+    throw new Error('Cannot post: Title required.');
+  }
+  if(!content){
+    throw new Error('Cannot post: Content required.');
   }
 
   this.title = title;
