@@ -1,0 +1,31 @@
+{
+  "name": "08-rest-api",
+  "version": "1.0.0",
+  "description": "This is an assignment for cf-401",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "debug": "^3.1.0",
+    "dotenv": "^4.0.0",
+    "eslint": "^4.16.0",
+    "jest": "^22.1.4",
+    "nodemon": "^1.14.11",
+    "superagent": "^3.8.2"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "jest --verbose -i",
+    "test:debug": "DEBUG=http* jest --verbose -i",
+    "start:watch": "nodemon index.js",
+    "start:debug": "DEBUG=http* nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Rima",
+  "license": "ISC"
+}
