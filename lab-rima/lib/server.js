@@ -10,7 +10,6 @@ const router = new Router();
 require('../route/route-note')(router);
 
 // Application setup
-
 const app = http.createServer(router.route());
 
 // Server controls

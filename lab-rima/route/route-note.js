@@ -95,17 +95,6 @@ module.exports = function(router){
     debug('PUT');
 
     if(req.url.query._id){
-      /*try {
-        memory['Note'][req.url.query._id];
-      } catch(err) {
-        debug(`There was a bad request: ${err}`);
-
-        res.writeHead(400, {'Content-Type': 'text/plain'});
-        res.write(err.message);
-        res.end();
-        return;
-      }*/
-
       storage.update('Note', req.url.query._id, req.body)
         .then(() => {
           res.writeHead(204);
@@ -114,6 +103,14 @@ module.exports = function(router){
           //        return;
         })
         .catch(err => {
+        // deals with custom error
+          if(err.message.startsWith('400')){
+            res.writeHead(400, {'Content-Type': 'text/plain'});
+            res.write(err.message);
+            res.end();
+            return;
+          }
+          // otherwise
           res.writeHead(400, {'Content-Type': 'text/plain'});
           res.write(err.message);
           res.end();
@@ -136,7 +133,7 @@ module.exports = function(router){
           res.writeHead(200, {'Content-Type': 'text/plain'});
           res.write('Deleted');
           res.end();
-          //        return;
+          return;
         })
         .catch(err => {
         // deals with custom error
@@ -152,28 +149,29 @@ module.exports = function(router){
           res.end();
           return;
         });
-    }
-    // if id isn't passed, fetch all
-    storage.deleteAll('Note')
-      .then(() => {
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.write('All deleted');
-        res.end();
+    } else {
+      // if id isn't passed, fetch all
+      storage.deleteAll('Note')
+        .then(() => {
+          res.writeHead(200, {'Content-Type': 'text/plain'});
+          res.write('All deleted');
+          res.end();
         //        return;
-      })
-      .catch(err => {
+        })
+        .catch(err => {
         // deals with custom error
-        if(err.message.startsWith('400')){
-          res.writeHead(400, {'Content-Type': 'text/plain'});
+          if(err.message.startsWith('400')){
+            res.writeHead(400, {'Content-Type': 'text/plain'});
+            res.write(err.message);
+            res.end();
+            return;
+          }
+          // otherwise
+          res.writeHead(404, {'Content-Type': 'text/plain'});
           res.write(err.message);
           res.end();
-          return;
-        }
-        // otherwise
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write(err.message);
-        res.end();
         //        return;
-      });
+        });
+    }
   });
 };

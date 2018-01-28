@@ -16,8 +16,6 @@ module.exports = function(request){
     let msg = '';
 
     request.on('data', data => {
-//console.log('data');
-//console.log(data.toString());
       debug(`Chunked request data: ${data.toString()}`);
       msg += data.toString();
     });
@@ -25,7 +23,6 @@ module.exports = function(request){
     request.on('end', () => {
       try {
         request.body = JSON.parse(msg);
-console.log('end');
         debug(`Completed request body: ${request.body}`);
 
         return resolve(request);

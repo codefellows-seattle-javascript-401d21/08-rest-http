@@ -51,10 +51,6 @@ describe('Server Integration Testing', () => {
           .send({title: 'Test', content: 'Testing'})
           .then(res => {
             postOne = res;
-
-            /*return superagent.post(':8888/api/v1/note')
-              .send({title: 'test', content: 'testing'})
-              .then(res => {postTwo = res;});*/
           });
       });
       // get all records
@@ -62,20 +58,7 @@ describe('Server Integration Testing', () => {
         return superagent.get(':8888/api/v1/note?_id='+postOne.body._id)
           .then(res => {getOne = res;});
       });
-      /*      let getOne;
-      const testTitle = 'Test';
-      const testContent = 'Testing';
 
-      // create new note to use it in test
-      beforeAll(() => {
-        return superagent.post(':8888/api/v1/note')
-          .send({title: testTitle, content: testContent})
-          .then(res => {
-            return superagent.get(`:8888/api/v1/note?_id=${res.body._id}`)
-            .then(res => {getOne = res;});
-          });
-      });
-*/
       test(
         'should contain id',
         () => {
@@ -91,8 +74,8 @@ describe('Server Integration Testing', () => {
       test(
         'should contain title and content that has been created in test',
         () => {
-          expect(getOne.body.title).toContain(postOne.body.title/*testTitle*/);
-          expect(getOne.body.content).toContain(postOne.body.content/*testContent*/);
+          expect(getOne.body.title).toContain(postOne.body.title);
+          expect(getOne.body.content).toContain(postOne.body.content);
         });
     });
 
@@ -156,7 +139,6 @@ describe('Server Integration Testing', () => {
       beforeAll(() => {
         return superagent.put(':8888/api/v1/note?_id=' + postOne.body._id)
           .send({ title: 'Update', content: 'Updating' })
-          .catch(err => console.log(err.message))
           .then(res => { putOne = res; });
       });
 
@@ -178,7 +160,6 @@ describe('Server Integration Testing', () => {
       beforeAll(() => {
         return superagent.put(':8888/api/v1/note?_id=' + postTwo.body._id)
           .send({ title: 'Update2' })
-          .catch(err => console.log(err.message))
           .then(res => { putTwo = res; });
       });
 
@@ -218,8 +199,102 @@ describe('Server Integration Testing', () => {
       );
     });
 
-    describe('DELETE /', () => {
+    // delete specific one
+    describe('DELETE /api/v1/note?_id=', () => {
+      let postOne, postTwo, delOne, getOne, getTwo;
 
+      // create two notes to use them in test
+      beforeAll(() => {
+        return superagent.post(':8888/api/v1/note')
+          .send({title: 'Test', content: 'Testing'})
+          .then(res => { postOne = res;});
+      });
+
+      // create another record
+      beforeAll(()  => {
+        return superagent.post(':8888/api/v1/note')
+          .send({title: 'Test2', content: 'Testing2'})
+          .then(res => { postTwo = res; });
+      });
+      // delete a record
+      beforeAll(() => {
+        return superagent.del(':8888/api/v1/note?_id=' + postOne.body._id)
+          .then(res => { delOne = res; });
+      });
+      // try to get a record that has been deleted
+      beforeAll(() => {
+        return superagent.get(':8888/api/v1/note?_id=' + postOne.body._id)
+          .catch(err => { getOne = err; });
+      });
+      // try to get a record that should exist
+      beforeAll(() => {
+        return superagent.get(':8888/api/v1/note?_id=' + postTwo.body._id)
+          .then(res => { getTwo = res; });
+      });
+
+      test(
+        'should delete one record',
+        () => {
+          expect(getOne.status).toBe(404);
+          expect(getOne.response.text).toEqual('404, Record does not exist');
+        }
+      );
+
+      test(
+        'should not delete the other records',
+        () => {
+          expect(getTwo.status).toBe(200);
+          expect(getTwo.body.title).toEqual('Test2');
+          expect(getTwo.body.content).toEqual('Testing2');
+        }
+      );
+
+      test(
+        'should return http status 200',
+        () => {
+          expect(delOne.status).toBe(200);
+        }
+      );
+    });
+
+    // delete all
+    describe('DELETE /api/v1/note', () => {
+      let delAll, getAll;
+
+      // create new notes to use them in test
+      beforeAll(() => {
+        return superagent.post(':8888/api/v1/note')
+          .send({title: 'Test', content: 'Testing'})
+          .then(() => {
+            return superagent.post(':8888/api/v1/note')
+              .send({title: 'test', content: 'testing'});
+          });
+      });
+      // delete all records
+      beforeAll(() => {
+        return superagent.delete(':8888/api/v1/note')
+          .then(res => {delAll = res;});
+      });
+      // try to get all records
+      beforeAll(() => {
+        return superagent.get(':8888/api/v1/note')
+          .catch(err => {getAll = err;});
+      });
+
+      test(
+        'should return http status 200',
+        () => {
+          expect(delAll.status).toBe(200);
+        }
+      );
+
+      test(
+        'should delete all records',
+        () => {
+          expect(getAll.response.status).toBe(404);
+          expect(getAll.response.text).toBe('404, No record in schema');
+        }
+      );
     });
   });
 });
