@@ -54,8 +54,6 @@ storage.delete = function (schema, item_id) {
 storage.fetchAll = function (schema) {
   if (!schema) return new Error('Cannot get a new item; Schema and id are required');
   if (!memory[schema]) return new Error('Item does not exist get.');
-  //let allItems = Object.values(memory[schema]);
   let allItems = Object.keys(memory[schema]);
-  console.log('allItems.length', allItems.length);
   return Object.keys(allItems[0]).length ? allItems : new Error('Item does not exist get.');
 };
