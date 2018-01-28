@@ -142,8 +142,9 @@ describe('Server Integration Testing', () => {
     });
 
     describe('PUT /', () => {
-      let postOne, putOne, getOne;
+      let postOne, postTwo, putOne, putTwo, getOne, getTwo;
 
+      // First new note
       // post an existing note to use it in test
       beforeAll(() => {
         return superagent.post(':8888/api/v1/note')
@@ -165,6 +166,28 @@ describe('Server Integration Testing', () => {
           .then(res => { getOne = res; });
       });
 
+      // Second new note
+      // post an existing note to use it in test
+      beforeAll(() => {
+        return superagent.post(':8888/api/v1/note')
+          .send({ title: 'Test2', content: 'Testing2' })
+          .then(res => { postTwo = res; });
+      });
+
+      // update an existing note to use it in test
+      beforeAll(() => {
+        return superagent.put(':8888/api/v1/note?_id=' + postTwo.body._id)
+          .send({ title: 'Update2' })
+          .catch(err => console.log(err.message))
+          .then(res => { putTwo = res; });
+      });
+
+      // get an existing note to use it in test
+      beforeAll(() => {
+        return superagent.get(':8888/api/v1/note?_id=' + postTwo.body._id)
+          .then(res => { getTwo = res; });
+      });
+
       test(
         'should update title and content when put request is sent with both new data',
         () => {
@@ -177,6 +200,20 @@ describe('Server Integration Testing', () => {
         'should respond with http res status 204',
         () => {
           expect(putOne.status).toBe(204);
+        }
+      );
+
+      test(
+        'should update title only  when put request is sent with new data for title only',
+        () => {
+          expect(getTwo.body.title).toEqual('Update2');
+        }
+      );
+
+      test(
+        'should respond with http res status 204',
+        () => {
+          expect(putTwo.status).toBe(204);
         }
       );
     });
