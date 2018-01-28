@@ -11,25 +11,25 @@ module.exports = function(router){
     // if id is passed
     if(req.url.query._id){
       storage.fetchOne('Note', req.url.query._id)
-      .then(note => {
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.write(JSON.stringify(note));
-        res.end();
-//        return;
+        .then(note => {
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          res.write(JSON.stringify(note));
+          res.end();
+          //        return;
         })
-      .catch(err => {
+        .catch(err => {
         // deals with custom error
-        if(err.message.startsWith('400')){
-          res.writeHead(400, {'Content-Type': 'text/plain'});
+          if(err.message.startsWith('400')){
+            res.writeHead(400, {'Content-Type': 'text/plain'});
+            res.write(err.message);
+            res.end();
+            return;
+          }
+          // otherwise
+          res.writeHead(404, {'Content-Type': 'text/plain'});
           res.write(err.message);
           res.end();
-          return;
-        }
-        // otherwise
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write(err.message);
-        res.end();
-      });
+        });
       return;
     }
     // if id isn't passed, fetch all
@@ -38,7 +38,7 @@ module.exports = function(router){
         res.writeHead(200, {'Content-Type': 'application/json'});
         res.write(JSON.stringify(ids));
         res.end();
-//        return;
+        //        return;
       })
       .catch(err => {
         // deals with custom error
@@ -52,7 +52,7 @@ module.exports = function(router){
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.write(err.message);
         res.end();
-//        return;
+        //        return;
       });
   });
 
@@ -74,70 +74,84 @@ module.exports = function(router){
     }
 
     storage.create('Note', newNote)
-    .then(storedNote => {
-      res.writeHead(201, {'Content-Type': 'application/json'});
-      res.write(JSON.stringify(storedNote));
-      res.end();
-//      return;
-    })
-    .catch(err => {
-      res.writeHead(400, {'Content-Type': 'text/plain'});
-      res.write(err.message);
-      res.end();
-//      return;
-    });
-  });
-
-      
-
-  router.put('/api/v1/note', (req, res) => {
-    if(req.url.query._id){
-      storage.update('Note', req.url.query._id, req.body)
-      .then(() => {
-        res.writeHead(204);
-        res.write('Updated');
+      .then(storedNote => {
+        res.writeHead(201, {'Content-Type': 'application/json'});
+        res.write(JSON.stringify(storedNote));
         res.end();
-//        return;
+        //      return;
       })
       .catch(err => {
         res.writeHead(400, {'Content-Type': 'text/plain'});
         res.write(err.message);
         res.end();
-//        return;
-      })
+        //      return;
+      });
+  });
+
+      
+
+  router.put('/api/v1/note', (req, res) => {
+
+    debug('PUT');
+
+    if(req.url.query._id){
+      /*try {
+        memory['Note'][req.url.query._id];
+      } catch(err) {
+        debug(`There was a bad request: ${err}`);
+
+        res.writeHead(400, {'Content-Type': 'text/plain'});
+        res.write(err.message);
+        res.end();
+        return;
+      }*/
+
+      storage.update('Note', req.url.query._id, req.body)
+        .then(() => {
+          res.writeHead(204);
+          res.write('Updated');
+          res.end();
+          //        return;
+        })
+        .catch(err => {
+          res.writeHead(400, {'Content-Type': 'text/plain'});
+          res.write(err.message);
+          res.end();
+          //        return;
+        });
       return;
     }
 
     res.writeHead(400, {'Content-Type': 'text/plain'});
     res.write(err.message);
     res.end();
-//    return;
+    //    return;
   });
 
   router.delete('/api/v1/note', (req, res) => {
     // if id is passed
     if(req.url.query._id){
       storage.deleteOne('Note', req.url.query._id)
-      .then(()=> {
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.write('Deleted');
-        res.end();
-//        return;
+        .then(()=> {
+          res.writeHead(200, {'Content-Type': 'text/plain'});
+          res.write('Deleted');
+          res.end();
+          //        return;
         })
-      .catch(err => {
+        .catch(err => {
         // deals with custom error
-        if(err.message.startsWith('400')){
-          res.writeHead(400, {'Content-Type': 'text/plain'});
+          if(err.message.startsWith('400')){
+            res.writeHead(400, {'Content-Type': 'text/plain'});
+            res.write(err.message);
+            res.end();
+            return;
+          }
+          // otherwise
+          res.writeHead(404, {'Content-Type': 'text/plain'});
           res.write(err.message);
           res.end();
           return;
-        }
-        // otherwise
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write(err.message);
-        res.end();
-        return;
-      })
+        });
     }
     // if id isn't passed, fetch all
     storage.deleteAll('Note')
@@ -145,7 +159,7 @@ module.exports = function(router){
         res.writeHead(200, {'Content-Type': 'text/plain'});
         res.write('All deleted');
         res.end();
-//        return;
+        //        return;
       })
       .catch(err => {
         // deals with custom error
@@ -159,7 +173,7 @@ module.exports = function(router){
         res.writeHead(404, {'Content-Type': 'text/plain'});
         res.write(err.message);
         res.end();
-//        return;
+        //        return;
       });
   });
 };

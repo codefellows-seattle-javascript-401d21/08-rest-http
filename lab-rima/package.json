@@ -19,6 +19,7 @@
     "superagent": "^3.8.2"
   },
   "scripts": {
+    "lint": "eslint .",
     "test": "jest --verbose -i",
     "test:debug": "DEBUG=http* jest --verbose -i",
     "start:watch": "nodemon index.js",

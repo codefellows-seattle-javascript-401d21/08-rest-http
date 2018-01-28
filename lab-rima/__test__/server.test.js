@@ -6,7 +6,7 @@ const superagent = require('superagent');
 
 describe('Server Integration Testing', () => {
 
-  beforeAll(() => server.start(8888, () => {console.log('Listening on 8888')}));
+  beforeAll(() => server.start(8888, () => {console.log('Listening on 8888');}));
   afterAll(() => server.stop());
 
   describe('Valid requests', () => {
@@ -17,8 +17,8 @@ describe('Server Integration Testing', () => {
       // create a new note to use it in test
       beforeAll(() => {
         return superagent.post(':8888/api/v1/note')
-        .send({title: 'Test', content: 'Testing'})
-        .then(res => { resPost = res; });
+          .send({title: 'Test', content: 'Testing'})
+          .then(res => { resPost = res; });
       });
 
       test(
@@ -26,19 +26,19 @@ describe('Server Integration Testing', () => {
         () => {
           expect(resPost.body.title).toEqual('Test');
           expect(resPost.body.content).toEqual('Testing');
-      });
+        });
 
       test(
         'should respond with http res status 201',
         () => {
           expect(resPost.status).toBe(201);
-      });
+        });
 
       test(
         'should have an _id property on the response object',
         () => {
           expect(resPost.body).toHaveProperty('_id');
-      });
+        });
     });
 
     // get one record
@@ -62,7 +62,7 @@ describe('Server Integration Testing', () => {
         return superagent.get(':8888/api/v1/note?_id='+postOne.body._id)
           .then(res => {getOne = res;});
       });
-/*      let getOne;
+      /*      let getOne;
       const testTitle = 'Test';
       const testContent = 'Testing';
 
@@ -80,20 +80,20 @@ describe('Server Integration Testing', () => {
         'should contain id',
         () => {
           expect(getOne.body._id).toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
-      });
+        });
 
       test(
         'should return http status 200',
         () => {
           expect(getOne.status).toBe(200);
-      });
+        });
 
       test(
         'should contain title and content that has been created in test',
         () => {
           expect(getOne.body.title).toContain(postOne.body.title/*testTitle*/);
           expect(getOne.body.content).toContain(postOne.body.content/*testContent*/);
-      });
+        });
     });
 
     // getAll
@@ -124,25 +124,61 @@ describe('Server Integration Testing', () => {
           getAll.body.map(_id => {
             expect(_id).toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
           });
-       });
+        });
 
       test(
         'should return http status 200',
         () => {
           expect(getAll.status).toBe(200);
-      });
+        });
 
       test(
         'should contain two ids that have been created in test',
         () => {
           expect(getAll.body).toContain(postOne.body._id);
           expect(getAll.body).toContain(postTwo.body._id);
-      });
+        });
 
     });
 
     describe('PUT /', () => {
+      let postOne, putOne, getOne;
 
+      // post an existing note to use it in test
+      beforeAll(() => {
+        return superagent.post(':8888/api/v1/note')
+          .send({ title: 'Test', content: 'Testing' })
+          .then(res => { postOne = res; });
+      });
+
+      // update an existing note to use it in test
+      beforeAll(() => {
+        return superagent.put(':8888/api/v1/note?_id=' + postOne.body._id)
+          .send({ title: 'Update', content: 'Updating' })
+          .catch(err => console.log(err.message))
+          .then(res => { putOne = res; });
+      });
+
+      // get an existing note to use it in test
+      beforeAll(() => {
+        return superagent.get(':8888/api/v1/note?_id=' + postOne.body._id)
+          .then(res => { getOne = res; });
+      });
+
+      test(
+        'should update title and content when put request is sent with both new data',
+        () => {
+          expect(getOne.body.title).toEqual('Update');
+          expect(getOne.body.content).toEqual('Updating');
+        }
+      );
+
+      test(
+        'should respond with http res status 204',
+        () => {
+          expect(putOne.status).toBe(204);
+        }
+      );
     });
 
     describe('DELETE /', () => {

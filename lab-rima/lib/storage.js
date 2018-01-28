@@ -22,8 +22,8 @@ const memory = {};
        'content': 'threethreethree',
      },
    },
-}*/
-
+}
+*/
 
 storage.create = function(schema, item){
 
@@ -86,8 +86,9 @@ storage.fetchAll = function(schema){
   });
 };
 
-storage.update = function(schema, itemId, item){
-
+storage.update = function(schema, itemId, newData){
+//console.log('item in storage.update');
+//console.log(item);
   return new Promise((resolve, reject) => {
 
     if(!schema){
@@ -96,14 +97,20 @@ storage.update = function(schema, itemId, item){
     if(!itemId){
       return reject(new Error('Cannot update. Item ID required.'));
     }
-    if(!item){
-      return reject(new Error('Cannot update. Item required.'));
-    }
-    if(item._id !== itemId){
-      return reject(new Error('Cannot update. Invalid item ID'));
+    if(!newData){
+      return reject(new Error('Cannot update. New data required.'));
     }
 
-    memory[schema][itemId] = item;
+    // update existing note with new data
+    let keysInNewData = Object.keys(newData);
+    let existingNote = memory['Note'][itemId];
+    for(let i = 0; i < keysInNewData.length; i++){
+      let key  = keysInNewData[i];
+      if(newData[key]){
+        existingNote[key] = newData[key];
+      }
+    }
+
     return resolve();
   });
 };
