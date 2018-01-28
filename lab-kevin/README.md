@@ -1,4 +1,4 @@
-# Lab 08: Vanilla REST API
+# Lab 08: REST API
 
 
 
