@@ -185,6 +185,61 @@ describe('Server Integration', function() {
     });
 
   });
+
+  describe('Invalid requests', () => {
+    describe('GET', () => {
+      beforeEach(() => {
+        return  superagent.get(':4000/api/v1')
+          .catch( res => {
+            this.resPost = res;
+          });
+      });
+      it('Should return a 404 error when sending a request to the wrong route', () => {
+        expect(this.resPost.response.status).toEqual(404);
+      });
+    });
+    describe('POST', () => {
+      beforeEach(() => {
+        return  superagent.post(':4000/api/v1')
+          .send({subject: 'hello', comment: 'Funkn-A'})
+          .catch( res => {
+            this.resPost = res;
+          });
+      });
+      it('Should return a 404 error when posting a request to the wrong route', () => {
+        expect(this.resPost.response.status).toEqual(404);
+      });
+    });
+
+    describe('PUT', () => {
+      beforeEach(() => {
+        return  superagent.post(':4000/api/v1?id=')
+          .send({subject: 'hello', comment: 'Funkn-A'})
+          .catch( res => {
+            this.resPost = res;
+          });
+      });
+      it('Should return a 404 error when making a PUT request to the wrong route', () => {
+        expect(this.resPost.response.status).toEqual(404);
+      });
+    });
+
+    describe('DELETE', () => {
+      beforeEach(() => {
+        return  superagent.post(':4000/api/v1?id=')
+          .send({subject: 'hello', comment: 'Funkn-A'})
+          .catch( res => {
+            this.resPost = res;
+          });
+      });
+      it('Should return a 404 error when making a DELETE request to the wrong route', () => {
+        expect(this.resPost.response.status).toEqual(404);
+      });
+
+    });
+
+  });
+
 });
     
 
