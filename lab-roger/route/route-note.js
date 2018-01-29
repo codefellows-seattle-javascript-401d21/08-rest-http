@@ -71,7 +71,7 @@ module.exports = function(router) {
 
     try {
       let replaceNote = new Note(req.body.title, req.body.content);
-      replaceNote.id = req.url.query._id;
+      replaceNote._id = req.url.query._id;
       debug('updated note before sending to storage', replaceNote);
 
       storage.update('Note', replaceNote)
