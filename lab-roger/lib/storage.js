@@ -35,7 +35,7 @@ storage.update = function(schema, newNote) {
     if(!schema || !newNote) {
       return reject(new Error('no item found to update'));
     }
-    memory[schema][newNote.id] = newNote;
+    memory[schema][newNote._id] = newNote;
     return resolve(memory[schema]);
   });
 };
