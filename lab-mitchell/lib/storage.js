@@ -59,14 +59,13 @@ storage.fetchAll = function(schema) { //don't need specific ID b/c getting all
   });
 };
 
-storage.update = function(schema, itemId, item) { //item is body of data that's passed, itemID is property on item 
+storage.update = function(schema, item) { //item is body of data that's passed, itemID is property on item 
   return new Promise((resolve, reject) => {
     if(!schema) return reject(new Error('400 Cannot find record, schema required')); //validate there is a schema
-    if(!itemId) return reject(new Error('400 Cannot find record, itemId required')); //validate there is an itemId
     if(!item) return reject(new Error('400 Cannot find record, item required')); //validate there is an item
-    if(!memory[schema][itemId]) return reject(new Error('404 Cannot find record, does not exist')); //if memory @ schema @ itemId DNE, return reject new Error
 
-    
+    memory[schema][item._id] = item; //reassigns value of specific item._id to the updated item
+    return resolve();
   });
 };
 
@@ -76,6 +75,7 @@ storage.delete = function(schema, itemId) {
     if (!itemId) return reject(new Error('400 Cannot find record, itemId required')); //validate there is an itemId
     if (!memory[schema][itemId]) return reject(new Error('404 Cannot find record, does not exist')); //if memory @ schema @ itemId DNE, return reject new Error
 
-
+    delete memory[schema][itemId]; //deletes that unique item
+    return resolve();  
   });
 };

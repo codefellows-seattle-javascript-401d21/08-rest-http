@@ -44,7 +44,6 @@ module.exports = function(router) {
           res.end();
         })
         .catch(err => {
-          console.log('ran the thing', err.message); 
           if(err.message.startsWith('400')) {
             res.writeHead(400, {'Content-Type': 'text/plain'});
             res.write('Bad Request');
@@ -52,7 +51,7 @@ module.exports = function(router) {
             return;
           }
 
-          res.writeHead(404, { 'Content-Type': 'text/plain' });
+          res.writeHead(404, {'Content-Type': 'text/plain'});
           res.write('Not Found');
           res.end();
         });
@@ -81,17 +80,37 @@ module.exports = function(router) {
   router.put('/api/v1/note', (req, res) => {
     debug('PUT /api/v1/note');
 
-    res.writeHead(400, {'Content-Type': 'text/plain'});
-    res.write('Bad Request');
-    res.end();
+    try {
+      let updatedNote = new Note(req.body.title, req.body.content);
+      updatedNote._id = req.body._id; 
+      storage.update('Note', updatedNote)
+        .then(item => {
+          res.writeHead(204, {'Content-Type': 'application/json'});
+          res.write(JSON.stringify(item));
+          res.end();
+        });
+    } catch(err) {
+      res.writeHead(400, {'Content-Type': 'text/plain'});
+      res.write('Bad Request');
+      res.end();
+    }
   });
 
   // use note_id to delete
   router.delete('/api/v1/note', (req, res) => {
     debug('DELETE /api/v1/note');
 
-    res.writeHead(400, {'Content-Type': 'text/plain'});
-    res.write('Bad Request');
-    res.end();
+    try{
+      storage.delete('Note', req.url.query._id)
+        .then(() => {
+          res.writeHead(204, {'Content-Type': 'text/plain'});
+          res.write('Record Deleted');
+          res.end();
+        });
+    } catch(err) {
+      res.writeHead(400, {'Content-Type': 'text/plain'});
+      res.write('Bad Request');
+      res.end();
+    }
   });
 };

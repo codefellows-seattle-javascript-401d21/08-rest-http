@@ -77,7 +77,57 @@ describe('#server.js testing', function() {
     });
 
 
-    describe('GET to /api/v1/note?_id=<record id>', function() {
+    describe('PUT /api/v1/note', function() {
+      let resPost, resPut;
+      beforeAll(() => {
+        return superagent.post(':3339/api/v1/note')
+          .send({title: 'hello', content: 'everybody'})
+          .then(res => {
+            resPost = res;
+          });
+      });
+
+      beforeAll(() => {
+        return superagent.put(':3339/api/v1/note')
+          .send({title: 'gday', content: 'mate'})
+          .then(res => {
+            resPut = res;
+          });
+      });
+
+      it('should update existing record', () => {
+        expect(res.body.title).toEqual('gday');
+        expect(res.body.content).toEqual('mate');
+      });
+
+      it('should return a status code of 204', () => {
+        expect(res.status).toBe(204);
+      });
+    });
+
+    describe('DELETE /api/v1/note', function() {
+      let resPost, resDelete, id;
+      beforeAll(() => {
+        return superagent.post(':3339/api/v1/note')
+          .send({title: 'hello', content: 'everybody'})
+          .then(res => {
+            id = res.body._id;
+            resPost = res;
+          });
+      });
+      
+      beforeAll(() => {
+        return superagent.delete(`:3339/api/v1/note?id=${id}`)
+          .then(res => {
+            resDelete = res;
+          })
+          .catch(err => {
+          });
+      });
+
+      it('should return a status code of 204 on deletion', () => {
+        expect(resDelete.status).toBe(204);
+      });
 
     });
   });
