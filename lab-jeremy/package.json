@@ -1,0 +1,42 @@
+{
+  "name": "lab-08",
+  "version": "1.0.0",
+  "description": "REST CRUD CREATE READ UPDATE DELETE test jest",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpjazzy/08-rest-http.git"
+  },
+  "keywords": [
+    "REST",
+    "CRUD",
+    "CREATE",
+    "READ",
+    "UPDATE",
+    "DELETE",
+    "test",
+    "jest"
+  ],
+  "author": "Jeremy Pearson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jpjazzy/08-rest-http/issues"
+  },
+  "homepage": "https://github.com/jpjazzy/08-rest-http#readme",
+  "devDependencies": {
+    "debug": "^3.1.0",
+    "dotenv": "^4.0.0",
+    "eslint": "^4.16.0",
+    "jest": "^22.1.4",
+    "superagent": "^3.8.2"
+  },
+  "dependencies": {
+    "uuid": "^3.2.1"
+  }
+}
