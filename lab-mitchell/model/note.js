@@ -13,5 +13,5 @@ module.exports = function(title, content) {
   this.title = title; //sets this's title to the passed title parameter
   this.content = content; //sets this's content to the passed content parameter
   this._id = uuid(); //sets this's _id to a unique user id from the imported module
-  debug(`Created a note: ${this}`);
+  debug(`Created a note: ${this}`); //logs to debugger that we've successfully created a note object
 };
