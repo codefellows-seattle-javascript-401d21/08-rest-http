@@ -44,7 +44,7 @@ storage.update = function (schema, item_id, body) {
 storage.delete = function (schema, item_id) {
   return new Promise((resolve, reject) => {
     if (!schema || !item_id) return reject(new Error('Cannot get a new item; Schema and id are required'));
-    if (!memory[schema]) return resolve(item);
+    if (!memory[schema]) return resolve(item_id);
     if (!memory[schema][item_id]) return reject(new Error('Item does not exist get.'));
     delete memory[schema][item_id];
     return resolve();
