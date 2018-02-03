@@ -36,7 +36,7 @@ describe('#server.js testing', function() {
 
 
     describe('GET to /api/v1/note', function() {
-      let postOne, postTwo, getOne;
+      let postOne, postTwo, getOne, getSingle;
 
       beforeAll(() => {
         return superagent.post(':3339/api/v1/note')
@@ -59,6 +59,17 @@ describe('#server.js testing', function() {
           });
       });
 
+      it('should return a single ID', () => {
+        return superagent.get(`:3339/api/v1/note?_id=${postOne.body._id}`)
+          .then(res => {
+            return getSingle = res;
+          })
+          .then(() => {
+            expect(getSingle.body.title).toEqual('hello');
+            expect(getSingle.body.content).toEqual('everybody');
+          });
+      });
+
       it('should return an array of ids', () => {
         getOne.body.map(id => {
           expect(id).toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/); //regex to match both the pattern and contents of the UUID, the {4} represent the number of characters in eaach - separated section
@@ -78,7 +89,7 @@ describe('#server.js testing', function() {
 
 
     describe('PUT /api/v1/note', function() {
-      let resPost, resPut;
+      let resPost, resPut, getOne;
       beforeAll(() => {
         return superagent.post(':3339/api/v1/note')
           .send({title: 'hello', content: 'everybody'})
@@ -89,39 +100,42 @@ describe('#server.js testing', function() {
 
       beforeAll(() => {
         return superagent.put(':3339/api/v1/note')
-          .send({title: 'gday', content: 'mate'})
+          .send({title: 'gday', content: 'mate', _id: resPost.body._id})
           .then(res => {
             resPut = res;
           });
       });
 
       it('should update existing record', () => {
-        expect(res.body.title).toEqual('gday');
-        expect(res.body.content).toEqual('mate');
+        return superagent.get(`:3339/api/v1/note?_id=${resPost.body._id}`)
+          .then(res => {
+            return getOne = res;
+          })
+          .then(() => {
+            expect(getOne.body.title).toEqual('gday');
+            expect(getOne.body.content).toEqual('mate');
+          });
       });
 
       it('should return a status code of 204', () => {
-        expect(res.status).toBe(204);
+        expect(resPut.status).toBe(204);
       });
     });
 
     describe('DELETE /api/v1/note', function() {
-      let resPost, resDelete, id;
+      let resDelete, id;
       beforeAll(() => {
         return superagent.post(':3339/api/v1/note')
           .send({title: 'hello', content: 'everybody'})
           .then(res => {
             id = res.body._id;
-            resPost = res;
           });
       });
       
       beforeAll(() => {
-        return superagent.delete(`:3339/api/v1/note?id=${id}`)
+        return superagent.delete(`:3339/api/v1/note?_id=${id}`)
           .then(res => {
             resDelete = res;
-          })
-          .catch(err => {
           });
       });
 
@@ -129,29 +143,76 @@ describe('#server.js testing', function() {
         expect(resDelete.status).toBe(204);
       });
 
+      it('should update existing record', () => {
+        return superagent.get(`:3339/api/v1/note?_id=${id}`)
+          .catch(err => {
+            expect(err.status).toBe(404);
+            expect(err.message).toContain('Not Found');
+          });
+      });
     });
   });
 
-
   describe('invalid requests', function() {
-    describe('POST /api/v1/note', function() {
-
-      it('should return a 404 given an incorrect path', () => {
-        // IF USING LEXICAL ARROW INSTEAD OF THE ABOVE function(done) HAVE TO RETURN SUPERAGENT THING
-        return superagent.post(':3339/api/v1/doesnotexist')
-          .send({title: '', content: ''}) //sending at least something back with valid route
+    describe('POST to /api/v1/note', function() {
+      it('should respond with a status code 400', () => {
+        return superagent.post(':3339/api/v1/note')
           .catch(err => {
-            expect(err.status).toBe(404); //try 400 if this test is failing/passing to test valid test
+            expect(err.status).toBe(400);
           });
       });
 
-      it('should return a 400 given no body of data on the request', () => {
-        return superagent.post(':3339/api/v1/note')
-          .send() //not sending anything back with valid route
+      it('should respond with a status code 404 with bad route path', () => {
+        return superagent.post(':3339/api/v1/notee')
+          .send({})
           .catch(err => {
-            expect(err.status).toBe(400); //try 404 if this test is failing/passing to test valid test
+            expect(err.status).toBe(404);
           });
-        
+      });
+    });
+
+
+    describe('GET to /api/v1/note', function() {
+      it('should respond with status code 404 with bad path', () => {
+        return superagent.get(':3339/api/v1/not')
+          .catch(err => {
+            expect(err.status).toBe(404);
+          });
+      });
+
+      it('should respond with status code 404 with bad ID', () => {
+        return superagent.get(':3339/api/v1/note?_id=badID')
+          .catch(err => {
+            expect(err.status).toBe(404);
+          });
+      });
+    });
+
+
+    describe('PUT /api/v1/note', function() {
+      let resPost;
+      beforeAll(() => {
+        return superagent.post(':3339/api/v1/note')
+          .send({title: 'hello', content: 'everybody'})
+          .then(res => {
+            resPost = res;
+          });
+      });
+
+      it('should fail to update with malformed querystring', () => {
+        return superagent.put(`:3339/api/v1/note?_id=${resPost.body._id}`)
+          .catch(err => {
+            expect(err.status).toBe(400);
+          });
+      });
+    });
+
+    describe('DELETE /api/v1/note', function () {
+      it('should return a status code of 404 with bad route', () => {
+        return superagent.delete(`:3339/api/v1/not`)
+          .catch(err => {
+            expect(err.status).toBe(404);
+          });
       });
     });
   });
